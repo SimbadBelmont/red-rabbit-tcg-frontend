@@ -1,55 +1,34 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IconoFlecha } from './Iconos';
+import logoBlanco from '../assets/logo-completo-blanco.png';
 
-const Destellos = ({ puntos }) => (
-    <g fill="#F3B4B6">
-        {puntos.map(([x, y, s], i) => (
-            <path key={i} d={`M${x} ${y - 2 * s}l${s} ${s * 1.6} ${s * 1.6} ${s}-${s * 1.6} ${s}-${s} ${s * 1.6}-${s}-${s * 1.6}-${s * 1.6}-${s} ${s * 1.6}-${s}z`} />
-        ))}
-    </g>
-);
-
-const CartaBlanca = ({ rot }) => (
-    <g transform={`rotate(${rot} 210 300)`}>
-        <rect x="150" y="70" width="120" height="168" rx="12" fill="#fff" />
-        <rect x="162" y="82" width="96" height="70" rx="6" fill="#F6DADA" />
-        <rect x="162" y="164" width="96" height="8" rx="4" fill="#EBDDDD" />
-        <rect x="162" y="180" width="70" height="8" rx="4" fill="#EBDDDD" />
-    </g>
-);
-
-// Ilustraciones de presentación. Se pueden reemplazar por fotos de la tienda (prop "imagen" en cada slide).
+// Ilustraciones de presentación en trazo de línea, como el logo.
+// Se pueden cambiar por fotos de la tienda.
+const ROJO = '#DF0E10';
 const ILUSTRACIONES = [
-    <svg key="0" viewBox="0 0 420 360" role="img" aria-label="Abanico de cartas con el conejo de Red Rabbit">
-        <circle cx="210" cy="190" r="150" fill="#2C1F1F" /><circle cx="210" cy="190" r="110" fill="#3A2626" />
-        <CartaBlanca rot={-18} /><CartaBlanca rot={16} />
-        <rect x="146" y="56" width="128" height="180" rx="12" fill="#D7262D" />
-        <rect x="156" y="66" width="108" height="160" rx="8" fill="none" stroke="#fff" strokeOpacity="0.5" strokeWidth="2" />
-        <g fill="none" stroke="#fff" strokeWidth="5" strokeLinecap="round"><path d="M196 92c-6 12-6 30 0 42" /><path d="M224 92c6 12 6 30 0 42" /></g>
-        <circle cx="210" cy="165" r="30" fill="#fff" /><circle cx="200" cy="160" r="4" fill="#1F1414" /><circle cx="220" cy="160" r="4" fill="#1F1414" />
-        <path d="M205 174q5 5 10 0" fill="none" stroke="#D7262D" strokeWidth="3" strokeLinecap="round" />
-        <text x="210" y="216" textAnchor="middle" fontFamily="Poppins, sans-serif" fontWeight="800" fontSize="14" fill="#fff">RED RABBIT</text>
-        <Destellos puntos={[[70, 100, 6], [350, 75, 5], [360, 275, 4]]} />
+    <div key="0" className="hero__logo"><img src={logoBlanco} alt="Logo de Red Rabbit TCG Store" /></div>,
+    <svg key="1" viewBox="0 0 420 380" role="img" aria-label="Trofeo entre dos cartas en una mesa de torneo">
+        <g fill="none" stroke="#fff" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M40 320 Q210 290 380 320" />
+            <g transform="rotate(-12 110 240)"><rect x="70" y="170" width="84" height="118" rx="10" /><rect x="78" y="162" width="84" height="118" rx="10" stroke={ROJO} /></g>
+            <g transform="rotate(12 310 240)"><rect x="266" y="170" width="84" height="118" rx="10" /><rect x="258" y="162" width="84" height="118" rx="10" stroke={ROJO} /></g>
+            <path d="M168 70h84v46a42 42 0 0 1-84 0z" stroke={ROJO} strokeWidth="5" />
+            <path d="M168 84h-20a20 20 0 0 0 24 26M252 84h20a20 20 0 0 1-24 26" stroke={ROJO} strokeWidth="5" />
+            <path d="M210 158v40M184 214h52M190 198h40" />
+        </g>
+        <text x="210" y="122" textAnchor="middle" fontFamily="Lilita One, sans-serif" fontSize="26" fill="#fff">1º</text>
     </svg>,
-    <svg key="1" viewBox="0 0 420 360" role="img" aria-label="Mesa de torneo con trofeo y cartas">
-        <circle cx="210" cy="190" r="150" fill="#2C1F1F" /><ellipse cx="210" cy="270" rx="170" ry="40" fill="#3A2626" />
-        <g transform="rotate(-10 120 250)"><rect x="80" y="196" width="70" height="98" rx="8" fill="#fff" /><rect x="88" y="204" width="54" height="40" rx="4" fill="#F6DADA" /></g>
-        <g transform="rotate(12 300 250)"><rect x="270" y="196" width="70" height="98" rx="8" fill="#fff" /><rect x="278" y="204" width="54" height="40" rx="4" fill="#F6DADA" /></g>
-        <path d="M170 80h80v40a40 40 0 0 1-80 0z" fill="#D7262D" />
-        <path d="M170 92h-22a22 22 0 0 0 26 28M250 92h22a22 22 0 0 1-26 28" fill="none" stroke="#D7262D" strokeWidth="8" strokeLinecap="round" />
-        <rect x="202" y="158" width="16" height="34" fill="#B01A20" /><rect x="178" y="190" width="64" height="18" rx="4" fill="#D7262D" />
-        <text x="210" y="118" textAnchor="middle" fontFamily="Poppins, sans-serif" fontWeight="800" fontSize="22" fill="#fff">1º</text>
-        <Destellos puntos={[[80, 100, 6], [345, 110, 5]]} />
-    </svg>,
-    <svg key="2" viewBox="0 0 420 360" role="img" aria-label="Sobre de correo con una carta saliendo">
-        <circle cx="210" cy="190" r="150" fill="#2C1F1F" />
-        <rect x="160" y="70" width="100" height="140" rx="10" fill="#fff" /><rect x="170" y="80" width="80" height="60" rx="6" fill="#F6DADA" />
-        <rect x="110" y="150" width="200" height="130" rx="14" fill="#D7262D" />
-        <path d="M110 160l100 70 100-70" fill="none" stroke="#fff" strokeWidth="6" strokeLinejoin="round" />
-        <circle cx="300" cy="150" r="26" fill="#fff" />
-        <path d="M288 150l9 9 16-18" fill="none" stroke="#D7262D" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
-        <Destellos puntos={[[80, 120, 6], [350, 260, 5]]} />
+    <svg key="2" viewBox="0 0 420 380" role="img" aria-label="Carta saliendo de un sobre de correo">
+        <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="150" y="50" width="112" height="156" rx="12" stroke="#fff" strokeWidth="4" />
+            <rect x="160" y="44" width="112" height="156" rx="12" stroke={ROJO} strokeWidth="4" />
+            <path d="M196 78c-6 12-6 30 0 44M226 78c6 12 6 30 0 44" stroke={ROJO} strokeWidth="4" />
+            <rect x="96" y="160" width="228" height="150" rx="16" stroke="#fff" strokeWidth="5" />
+            <path d="M96 172l114 78 114-78" stroke="#fff" strokeWidth="5" />
+            <circle cx="318" cy="160" r="28" stroke={ROJO} strokeWidth="5" />
+            <path d="M305 160l9 9 17-19" stroke={ROJO} strokeWidth="5" />
+        </g>
     </svg>,
 ];
 

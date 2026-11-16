@@ -1,11 +1,6 @@
 // Iconos de línea (mismo trazo que el diseño). Decorativos: aria-hidden.
 const base = { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true };
 
-export const IconoConejo = ({ size = 24 }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" {...base} strokeWidth={1.8}>
-        <path d="M9 3c-1 2-1 5 0 7" /><path d="M14 3c1 2 1 5 0 7" /><circle cx="11.5" cy="15" r="5" />
-    </svg>
-);
 export const IconoCarrito = ({ size = 22 }) => (
     <svg width={size} height={size} viewBox="0 0 24 24" {...base} strokeWidth={1.8}>
         <circle cx="9" cy="20" r="1.3" /><circle cx="18" cy="20" r="1.3" />

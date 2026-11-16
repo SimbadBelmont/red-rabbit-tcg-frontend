@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
+import logo from '../assets/logo-completo.png';
 
 export default function Footer() {
     return (
         <footer className="footer">
             <div className="contenedor footer__fila">
-                <span>© {new Date().getFullYear()} Red Rabbit TCG Store · Cuernavaca, Morelos</span>
+                <span className="footer__marca"><img src={logo} alt="Red Rabbit TCG Store" />© {new Date().getFullYear()} Red Rabbit TCG Store · Cuernavaca, Morelos</span>
                 <span className="footer__enlaces">
                     <Link to="/contacto">Contacto</Link>
                     <a href="#instagram">Instagram</a>

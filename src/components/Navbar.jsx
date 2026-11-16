@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { usePedido } from '../context/PedidoContext';
-import { IconoCarrito, IconoConejo, IconoMenu, IconoUsuario } from './Iconos';
+import { IconoCarrito, IconoMenu, IconoUsuario } from './Iconos';
+import logoMarca from '../assets/logo-marca.png';
+import logoTexto from '../assets/logo-texto.png';
 
 const PUBLICAS = [
     { to: '/', label: 'Inicio', end: true },
@@ -26,12 +28,9 @@ export default function Navbar() {
     return (
         <header className="navbar">
             <div className="contenedor navbar__fila">
-                <Link to="/" className="marca" onClick={() => setAbierto(false)}>
-                    <span className="marca__icono"><IconoConejo /></span>
-                    <span className="marca__texto">
-                        <span className="marca__nombre">Red Rabbit</span>
-                        <span className="marca__sub">TCG STORE · CUERNAVACA</span>
-                    </span>
+                <Link to="/" className="marca" aria-label="Red Rabbit TCG Store, inicio" onClick={() => setAbierto(false)}>
+                    <img src={logoMarca} alt="" className="marca__simbolo" />
+                    <img src={logoTexto} alt="Red Rabbit TCG Store" className="marca__texto" />
                 </Link>
 
                 <button type="button" className="navbar__menu" aria-label="Abrir menú" aria-expanded={abierto} onClick={() => setAbierto(!abierto)}>

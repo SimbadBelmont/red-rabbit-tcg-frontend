@@ -49,7 +49,7 @@ export default function Inicio() {
             )}
 
             <section className="contenedor seccion">
-                <h2 className="sobretitulo">EXPLORA LA TIENDA</h2>
+                <h2 className="etiqueta-logo">EXPLORA LA TIENDA</h2>
                 <div className="rejilla rejilla--260">
                     {ACCESOS.map((a) => (
                         <Link key={a.to} to={a.to} className="tarjeta tarjeta--enlace acceso">
