@@ -257,3 +257,44 @@ textarea.campo { resize: vertical; }
 .footer__enlaces a { color: var(--suave); }
 .footer__legal { padding-bottom: 28px; font-size: 12px; color: #6B5A5A; }
 .footer__legal a { color: inherit; text-decoration: underline; }
+
+/* ===== Ventana emergente de acceso ===== */
+.modal {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  background: rgba(20, 14, 14, .55);
+  backdrop-filter: blur(3px);
+  animation: modal-fondo .18s ease-out;
+}
+.modal__panel {
+  position: relative;
+  width: 100%; max-width: 420px; max-height: calc(100vh - 40px); overflow-y: auto;
+  background: #fff; border-radius: 22px; padding: 28px 26px 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .25);
+  border-top: 5px solid var(--rojo);
+  animation: modal-entrada .22s cubic-bezier(.2, .8, .3, 1.2);
+}
+.modal__cerrar {
+  position: absolute; top: 12px; right: 12px;
+  width: 36px; height: 36px; border-radius: 999px; border: 0;
+  background: var(--rosa-claro, #fdf2f2); color: var(--tinta, #222);
+  font-size: 24px; line-height: 1; cursor: pointer;
+}
+.modal__cerrar:hover { background: var(--rosa, #fde4e4); color: var(--rojo-texto); }
+.modal__marca { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 18px; text-align: center; }
+.modal__marca img { width: 56px; height: 56px; object-fit: contain; }
+.modal__marca h2 { margin: 0; font-family: var(--fuente-titulos); font-size: 22px; color: var(--tinta, #222); }
+.modal__pestanas { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; margin-bottom: 18px; border-radius: 12px; background: var(--rosa-claro, #fdf2f2); }
+.modal__pestanas button { border: 0; background: transparent; padding: 10px; border-radius: 9px; font: 600 14px var(--fuente); color: var(--tinta-2, #555); cursor: pointer; }
+.modal__pestanas button.activa { background: #fff; color: var(--rojo-texto); box-shadow: 0 2px 8px rgba(0, 0, 0, .08); }
+.enlace-boton { background: none; border: 0; padding: 0; font: inherit; font-weight: 600; color: var(--rojo-texto); cursor: pointer; }
+.enlace-boton:hover { text-decoration: underline; }
+.centrado { text-align: center; }
+@keyframes modal-fondo { from { opacity: 0; } }
+@keyframes modal-entrada { from { opacity: 0; transform: translateY(16px) scale(.97); } }
+@media (max-width: 520px) {
+  .modal { align-items: flex-end; padding: 0; }
+  .modal__panel { max-width: none; border-radius: 22px 22px 0 0; max-height: 92vh; }
+}
+@media (prefers-reduced-motion: reduce) { .modal, .modal__panel { animation: none; } }

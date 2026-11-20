@@ -2,13 +2,13 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import RutaProtegida from './components/RutaProtegida';
+import ModalAcceso from './components/ModalAcceso';
 import Inicio from './pages/Inicio';
 import Catalogo from './pages/Catalogo';
 import Eventos from './pages/Eventos';
 import ComoPedir from './pages/ComoPedir';
 import Contacto from './pages/Contacto';
 import Login from './pages/Login';
-import Registro from './pages/Registro';
 import MiCuenta from './pages/MiCuenta';
 import Inventario from './pages/Inventario';
 import PuntoVenta from './pages/PuntoVenta';
@@ -30,7 +30,7 @@ function App() {
           <Route path="/contacto" element={<Contacto />} />
 
           <Route path="/login" element={user ? <Navigate to="/mi-cuenta" /> : <Login />} />
-          <Route path="/registro" element={user ? <Navigate to="/mi-cuenta" /> : <Registro />} />
+          <Route path="/registro" element={user ? <Navigate to="/mi-cuenta" /> : <Login modo="registro" />} />
 
           {/* Con sesión */}
           <Route path="/mi-cuenta" element={<RutaProtegida><MiCuenta /></RutaProtegida>} />
@@ -43,6 +43,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
+      <ModalAcceso />
     </Router>
   );
 }
