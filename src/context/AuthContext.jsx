@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useState } from 'react';
 import * as authService from '../services/authService';
 
 const AuthContext = createContext();
@@ -26,8 +26,13 @@ export const AuthProvider = ({ children }) => {
     };
     const esStaff = user?.rol === 'staff' || user?.rol === 'admin';
 
+    // Ventana emergente de acceso: modo 'login' o 'registro'; 'desde' = a dónde ir al entrar
+    const [acceso, setAcceso] = useState({ abierto: false, modo: 'login', desde: null });
+    const abrirAcceso = useCallback((modo = 'login', desde = null) => setAcceso({ abierto: true, modo, desde }), []);
+    const cerrarAcceso = useCallback(() => setAcceso((a) => ({ ...a, abierto: false })), []);
+
     return (
-        <AuthContext.Provider value={{ user, setUser, login, registrar, logout, esStaff }}>
+        <AuthContext.Provider value={{ user, setUser, login, registrar, logout, esStaff, acceso, abrirAcceso, cerrarAcceso }}>
             {children}
         </AuthContext.Provider>
     );

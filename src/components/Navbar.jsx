@@ -20,7 +20,7 @@ const STAFF = [
 ];
 
 export default function Navbar() {
-    const { user, esStaff } = useAuth();
+    const { user, esStaff, abrirAcceso } = useAuth();
     const { cantidad } = usePedido();
     const [abierto, setAbierto] = useState(false);
     const enlaces = esStaff ? [...PUBLICAS, ...STAFF] : PUBLICAS;
@@ -48,9 +48,15 @@ export default function Navbar() {
                         <IconoCarrito />
                         {cantidad > 0 && <span className="navbar__burbuja">{cantidad}</span>}
                     </Link>
-                    <Link to={user ? '/mi-cuenta' : '/login'} className="btn btn--rojo btn--chico">
-                        <IconoUsuario /> {user ? 'Mi cuenta' : 'Entrar'}
-                    </Link>
+                    {user ? (
+                        <Link to="/mi-cuenta" className="btn btn--rojo btn--chico">
+                            <IconoUsuario /> Mi cuenta
+                        </Link>
+                    ) : (
+                        <button type="button" className="btn btn--rojo btn--chico" onClick={() => { setAbierto(false); abrirAcceso('login'); }}>
+                            <IconoUsuario /> Entrar
+                        </button>
+                    )}
                 </div>
             </div>
         </header>

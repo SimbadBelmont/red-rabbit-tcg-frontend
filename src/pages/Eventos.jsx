@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import EventoCard from '../components/EventoCard';
 import { TIPOS, WIZARDS_LOCATOR, cancelarReserva, misEventos, proximos, reservar } from '../services/eventoService';
 import { useAuth } from '../context/AuthContext';
 
 export default function Eventos() {
-    const { user } = useAuth();
-    const navigate = useNavigate();
+    const { user, abrirAcceso } = useAuth();
     const [tipo, setTipo] = useState('');
     const [eventos, setEventos] = useState([]);
     const [mios, setMios] = useState(new Set());
@@ -22,7 +20,7 @@ export default function Eventos() {
     }, [user]);
 
     const onReservar = async (evento, apartar) => {
-        if (!user) return navigate('/login', { state: { desde: '/eventos' } });
+        if (!user) return abrirAcceso('login'); // al entrar se queda en Eventos
         setOcupado(evento._id);
         try {
             if (apartar) await reservar(evento._id); else await cancelarReserva(evento._id);
