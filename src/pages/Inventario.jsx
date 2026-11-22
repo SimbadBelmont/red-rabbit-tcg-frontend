@@ -3,7 +3,7 @@ import { descargarPlantilla, importarCsv, nombreJuego, previsualizarCsv } from '
 import { mxn } from '../utils/formato';
 import { IconoSubir } from '../components/Iconos';
 
-const COLUMNAS = ['nombre', 'juego', 'expansion', 'numero', 'rareza', 'condicion', 'idioma', 'foil', 'precio', 'stock'];
+const COLUMNAS = ['nombre', 'juego', 'expansion', 'numero', 'rareza', 'condicion', 'idioma', 'foil', 'precio', 'moneda', 'stock'];
 
 export default function Inventario() {
     const input = useRef(null);
@@ -51,6 +51,7 @@ export default function Inventario() {
                 <div className="columnas-esperadas">
                     <span className="sobretitulo">COLUMNAS ESPERADAS</span>
                     <div className="fila-botones">{COLUMNAS.map((c) => <code key={c} className="codigo">{c}</code>)}</div>
+                    <span className="texto-suave texto-chico">También puedes subir directo el CSV que exporta ManaBox.</span>
                 </div>
             </div>
 
@@ -61,20 +62,25 @@ export default function Inventario() {
                 <section className="tarjeta pila" aria-labelledby="vista-t">
                     <div className="encabezado-seccion">
                         <h2 id="vista-t" className="titulo-tarjeta">Vista previa · {archivo?.name}</h2>
-                        <span className="texto-suave">{vista.validas} de {vista.total} filas válidas</span>
+                        <span className="texto-suave">{vista.validas} cartas listas de {vista.total} filas</span>
                     </div>
+                    <p className="alerta alerta--info">
+                        Formato detectado: <strong>{vista.formato === 'manabox' ? 'exportación de ManaBox' : 'plantilla de Red Rabbit'}</strong>.
+                        {' '}Dólares a pesos: {vista.conversion.tipoCambioUSD ? `$${vista.conversion.tipoCambioUSD} por dólar` : 'sin tipo de cambio configurado'}
+                        {vista.conversion.margen ? ` + ${vista.conversion.margen}% de margen` : ''}. Las filas repetidas se suman.
+                    </p>
                     {vista.errores.length > 0 && (
                         <details className="alerta alerta--error">
                             <summary>{vista.errores.length} filas con errores (no se cargarán)</summary>
-                            <ul>{vista.errores.slice(0, 50).map((e) => <li key={e.linea}>Línea {e.linea}: {e.problemas.join(', ')}</li>)}</ul>
+                            <ul>{vista.errores.slice(0, 50).map((e) => <li key={e.linea}>Línea {e.linea}{e.nombre ? ` (${e.nombre})` : ''}: {e.problemas.join(', ')}</li>)}</ul>
                         </details>
                     )}
                     <div className="tabla-caja">
                         <table className="tabla">
-                            <thead><tr><th>Nombre</th><th>Juego</th><th>Expansión</th><th>Nº</th><th>Condición</th><th>Precio</th><th>Stock</th></tr></thead>
+                            <thead><tr><th>Nombre</th><th>Juego</th><th>Expansión</th><th>Nº</th><th>Condición</th><th>Precio original</th><th>Precio en tienda</th><th>Stock</th></tr></thead>
                             <tbody>
                                 {vista.muestra.map((c, i) => (
-                                    <tr key={i}><td>{c.nombre}</td><td>{nombreJuego(c.juego)}</td><td>{c.expansion}</td><td>{c.numero}</td><td>{c.condicion}{c.foil ? ' · Foil' : ''}</td><td>{mxn(c.precio)}</td><td>{c.stock}</td></tr>
+                                    <tr key={i}><td>{c.nombre}</td><td>{nombreJuego(c.juego)}</td><td>{c.expansion}</td><td>{c.numero}</td><td>{c.condicion}{c.foil ? ' · Foil' : ''}</td><td>{c.precioOriginal || '—'}</td><td>{mxn(c.precio)}</td><td>{c.stock}</td></tr>
                                 ))}
                             </tbody>
                         </table>
@@ -94,7 +100,7 @@ export default function Inventario() {
             {resultado && (
                 <p className="alerta alerta--ok" role="status">
                     Carga lista: {resultado.nuevas} cartas nuevas y {resultado.actualizadas} actualizadas.
-                    Las imágenes de Magic se están descargando de Scryfall en segundo plano.
+                    Las imágenes de Magic se están descargando de Scryfall en segundo plano (pueden tardar un par de minutos).
                 </p>
             )}
         </div>
