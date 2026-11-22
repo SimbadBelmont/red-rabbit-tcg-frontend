@@ -64,11 +64,18 @@ export default function Inventario() {
                         <h2 id="vista-t" className="titulo-tarjeta">Vista previa · {archivo?.name}</h2>
                         <span className="texto-suave">{vista.validas} cartas listas de {vista.total} filas</span>
                     </div>
-                    <p className="alerta alerta--info">
-                        Formato detectado: <strong>{vista.formato === 'manabox' ? 'exportación de ManaBox' : 'plantilla de Red Rabbit'}</strong>.
-                        {' '}Dólares a pesos: {vista.conversion.tipoCambioUSD ? `$${vista.conversion.tipoCambioUSD} por dólar` : 'sin tipo de cambio configurado'}
-                        {vista.conversion.margen ? ` + ${vista.conversion.margen}% de margen` : ''}. Las filas repetidas se suman.
-                    </p>
+                    {vista.formato ? (
+                        <p className="alerta alerta--info">
+                            Formato detectado: <strong>{vista.formato === 'manabox' ? 'exportación de ManaBox' : 'plantilla de Red Rabbit'}</strong>.
+                            {' '}Dólares a pesos: {vista.conversion?.tipoCambioUSD ? `$${vista.conversion.tipoCambioUSD} por dólar` : 'sin tipo de cambio configurado'}
+                            {vista.conversion?.margen ? ` + ${vista.conversion.margen}% de margen` : ''}. Las filas repetidas se suman.
+                        </p>
+                    ) : (
+                        // Respuesta de un backend anterior a la importación de ManaBox
+                        <p className="alerta alerta--error">
+                            El servidor todavía tiene la versión anterior del backend y no reconoce el CSV de ManaBox. Actualiza la imagen del backend.
+                        </p>
+                    )}
                     {vista.errores.length > 0 && (
                         <details className="alerta alerta--error">
                             <summary>{vista.errores.length} filas con errores (no se cargarán)</summary>
