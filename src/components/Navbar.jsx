@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { usePedido } from '../context/PedidoContext';
 import { IconoCarrito, IconoMenu, IconoUsuario } from './Iconos';
+import MenuCuenta from './MenuCuenta';
 import logoMarca from '../assets/logo-marca.png';
 import logoTexto from '../assets/logo-texto.png';
 
@@ -49,9 +50,7 @@ export default function Navbar() {
                         {cantidad > 0 && <span className="navbar__burbuja">{cantidad}</span>}
                     </Link>
                     {user ? (
-                        <Link to="/mi-cuenta" className="btn btn--rojo btn--chico">
-                            <IconoUsuario /> Mi cuenta
-                        </Link>
+                        <MenuCuenta onNavegar={() => setAbierto(false)} />
                     ) : (
                         <button type="button" className="btn btn--rojo btn--chico" onClick={() => { setAbierto(false); abrirAcceso('login'); }}>
                             <IconoUsuario /> Entrar
