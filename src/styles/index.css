@@ -298,3 +298,55 @@ textarea.campo { resize: vertical; }
   .modal__panel { max-width: none; border-radius: 22px 22px 0 0; max-height: 92vh; }
 }
 @media (prefers-reduced-motion: reduce) { .modal, .modal__panel { animation: none; } }
+
+/* ===== Menú desplegable de la cuenta ===== */
+.menu-cuenta { position: relative; }
+.menu-cuenta__boton { gap: 8px; padding-left: 6px; }
+.menu-cuenta__avatar {
+  width: 26px; height: 26px; border-radius: 999px; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #fff; color: var(--rojo); font: 700 12px var(--fuente); letter-spacing: .02em;
+}
+.menu-cuenta__avatar--grande { width: 46px; height: 46px; font-size: 17px; background: var(--rosa); color: var(--rojo-texto); }
+.menu-cuenta__flecha { font-size: 12px; transition: transform .15s ease; }
+.menu-cuenta__flecha.girada { transform: rotate(180deg); }
+.menu-cuenta__panel {
+  position: absolute; right: 0; top: calc(100% + 10px); z-index: 50;
+  width: 280px; padding: 8px;
+  background: #fff; border: 1px solid var(--borde); border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(31, 20, 20, .16);
+  animation: menu-cuenta-entrada .16s ease-out;
+}
+.menu-cuenta__panel::before {
+  content: ''; position: absolute; top: -7px; right: 26px;
+  width: 12px; height: 12px; background: #fff;
+  border-left: 1px solid var(--borde); border-top: 1px solid var(--borde);
+  transform: rotate(45deg);
+}
+.menu-cuenta__perfil { display: flex; gap: 12px; align-items: center; padding: 10px 10px 14px; border-bottom: 1px solid var(--borde); }
+.menu-cuenta__datos { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.menu-cuenta__datos strong { font-size: 15px; color: var(--tinta); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.menu-cuenta__datos > span:not(.menu-cuenta__rol) { font-size: 13px; color: var(--tinta-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.menu-cuenta__rol { align-self: flex-start; margin-top: 4px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; background: var(--rosa-claro); color: var(--tinta-2); border: 1px solid var(--borde); }
+.menu-cuenta__rol.rol--admin, .menu-cuenta__rol.rol--staff { background: var(--rojo); border-color: var(--rojo); color: #fff; }
+.menu-cuenta__grupo { display: flex; flex-direction: column; padding: 6px 0; }
+.menu-cuenta__grupo + .menu-cuenta__grupo { border-top: 1px solid var(--borde); }
+.menu-cuenta__titulo { padding: 6px 12px 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--tinta-2); opacity: .7; }
+.menu-cuenta__item {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 9px 12px; border: 0; border-radius: 10px; background: none;
+  font: 500 14px var(--fuente); color: var(--tinta); text-align: left; cursor: pointer;
+}
+.menu-cuenta__item:hover { background: var(--rosa-claro); color: var(--rojo-texto); }
+.menu-cuenta__item.activo { background: var(--rosa); color: var(--rojo-texto); font-weight: 600; }
+.menu-cuenta__icono { width: 20px; text-align: center; font-size: 15px; }
+.menu-cuenta__salir { color: var(--rojo-texto); }
+@keyframes menu-cuenta-entrada { from { opacity: 0; transform: translateY(-6px); } }
+@media (max-width: 520px) {
+  .menu-cuenta__texto { display: none; }
+  .menu-cuenta__panel { position: fixed; left: 12px; right: 12px; top: 64px; width: auto; }
+  .menu-cuenta__panel::before { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .menu-cuenta__panel { animation: none; } }
+/* Nombres largos no rompen el encabezado de la cuenta */
+.perfil .titulo-seccion { overflow-wrap: anywhere; }

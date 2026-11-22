@@ -11,7 +11,11 @@ export const AuthProvider = ({ children }) => {
     // Al cargar la app, revisamos si ya hay sesión guardada
     const [user, setUser] = useState(leerUsuario);
 
+    // true justo después de cerrar sesión: las rutas privadas mandan al inicio, no al login
+    const [salio, setSalio] = useState(false);
+
     const guardarSesion = ({ token, usuario }) => {
+        setSalio(false);
         localStorage.setItem('token', token);
         localStorage.setItem('usuario', JSON.stringify(usuario));
         setUser(usuario);
@@ -22,6 +26,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('usuario');
+        setSalio(true);
         setUser(null);
     };
     const esStaff = user?.rol === 'staff' || user?.rol === 'admin';
@@ -32,7 +37,7 @@ export const AuthProvider = ({ children }) => {
     const cerrarAcceso = useCallback(() => setAcceso((a) => ({ ...a, abierto: false })), []);
 
     return (
-        <AuthContext.Provider value={{ user, setUser, login, registrar, logout, esStaff, acceso, abrirAcceso, cerrarAcceso }}>
+        <AuthContext.Provider value={{ user, setUser, login, registrar, logout, salio, esStaff, acceso, abrirAcceso, cerrarAcceso }}>
             {children}
         </AuthContext.Provider>
     );

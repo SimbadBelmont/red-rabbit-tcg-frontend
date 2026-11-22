@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import * as wishlist from '../services/wishlistService';
 import { misPedidos } from '../services/pedidoService';
@@ -12,7 +13,10 @@ const PESTANAS = [['wishlist', 'Wishlist'], ['pedidos', 'Pedidos'], ['eventos', 
 
 export default function MiCuenta() {
     const { user, setUser, logout } = useAuth();
-    const [pestana, setPestana] = useState('wishlist');
+    const [params, setParams] = useSearchParams();
+    // La sección viene en la URL (?seccion=pedidos) para que el menú de la cuenta lleve directo
+    const pestana = PESTANAS.some(([id]) => id === params.get('seccion')) ? params.get('seccion') : 'wishlist';
+    const setPestana = (id) => setParams({ seccion: id }, { replace: true });
     const [deseos, setDeseos] = useState([]);
     const [pedidos, setPedidos] = useState([]);
     const [eventos, setEventos] = useState([]);
@@ -102,7 +106,7 @@ export default function MiCuenta() {
 
             {pestana === 'ajustes' && (
                 <form className="tarjeta pila formulario-angosto" onSubmit={guardarPerfil}>
-                    <label className="etiqueta">Nombre<input className="campo" required value={perfil.nombre} onChange={(e) => setPerfil({ ...perfil, nombre: e.target.value })} /></label>
+                    <label className="etiqueta">Nombre<input className="campo" required maxLength={60} value={perfil.nombre} onChange={(e) => setPerfil({ ...perfil, nombre: e.target.value })} /></label>
                     <label className="etiqueta">Teléfono<input className="campo" type="tel" value={perfil.telefono} onChange={(e) => setPerfil({ ...perfil, telefono: e.target.value })} /></label>
                     <label className="etiqueta">Wizards Account (para eventos de Magic)<input className="campo" value={perfil.wizardsId} onChange={(e) => setPerfil({ ...perfil, wizardsId: e.target.value })} /></label>
                     {aviso && <p className="alerta alerta--ok">{aviso}</p>}
