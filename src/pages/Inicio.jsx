@@ -6,6 +6,7 @@ import { JUEGOS, recientes } from '../services/inventarioService';
 import { proximos } from '../services/eventoService';
 import { diaMes, hora } from '../utils/formato';
 import { usePedido } from '../context/PedidoContext';
+import { TIENDA } from '../datos/tienda';
 
 const ACCESOS = [
     { titulo: 'Catálogo', texto: 'Todo lo que hay en existencia, con filtros por juego, expansión y rareza.', cta: 'Ver catálogo', to: '/catalogo' },
@@ -91,9 +92,13 @@ export default function Inicio() {
                 <div className="cinta-rosa">
                     <div className="pila-chica">
                         <h2 className="titulo-seccion titulo-seccion--chico">Visítanos en Cuernavaca</h2>
-                        <p>[DIRECCIÓN DE LA TIENDA] · [HORARIO]</p>
+                        <p>{TIENDA.direccionCorta}</p>
+                        <p className="texto-suave">{TIENDA.horario.map((h) => `${h.dias}: ${h.horas}`).join(' · ')}</p>
                     </div>
-                    <Link to="/contacto" className="btn btn--rojo">Cómo llegar</Link>
+                    <div className="fila-botones">
+                        <a href={TIENDA.comoLlegarUrl} target="_blank" rel="noreferrer" className="btn btn--rojo">Cómo llegar</a>
+                        <Link to="/contacto" className="btn btn--contorno">Contacto</Link>
+                    </div>
                 </div>
             </section>
         </>

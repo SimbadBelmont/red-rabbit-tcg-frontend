@@ -1,13 +1,6 @@
 import { useState } from 'react';
+import { TIENDA } from '../datos/tienda';
 
-// Datos de la tienda: reemplazar los valores entre corchetes
-const TIENDA = {
-    direccion: ['[CALLE Y NÚMERO]', '[COLONIA], Cuernavaca, Mor.'],
-    horario: ['Lun – Vie: [00:00 – 00:00]', 'Sáb – Dom: [00:00 – 00:00]'],
-    correo: 'tienda@ejemplo.com',
-    telefono: '[TELÉFONO / WHATSAPP]',
-    mapaUrl: '', // URL "Insertar mapa" de Google Maps
-};
 
 export default function Contacto() {
     const [form, setForm] = useState({ nombre: '', asunto: 'Duda sobre una carta', mensaje: '' });
@@ -28,11 +21,12 @@ export default function Contacto() {
             <div className="con-lateral con-lateral--derecha">
                 <div className="contenido pila">
                     {TIENDA.mapaUrl
-                        ? <iframe title="Mapa de la tienda" src={TIENDA.mapaUrl} className="mapa" loading="lazy" />
+                        ? <iframe title={`Mapa: ${TIENDA.direccionCorta}`} src={TIENDA.mapaUrl} className="mapa" loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen />
                         : <div className="mapa mapa--vacio">[Mapa de Google Maps]</div>}
                     <div className="rejilla rejilla--220">
-                        <div className="tarjeta pila-chica"><span className="sobretitulo">DIRECCIÓN</span>{TIENDA.direccion.map((l) => <span key={l}>{l}</span>)}</div>
-                        <div className="tarjeta pila-chica"><span className="sobretitulo">HORARIO</span>{TIENDA.horario.map((l) => <span key={l}>{l}</span>)}</div>
+                        <div className="tarjeta pila-chica"><span className="sobretitulo">DIRECCIÓN</span>{TIENDA.direccion.map((l) => <span key={l}>{l}</span>)}
+                            <a href={TIENDA.comoLlegarUrl} target="_blank" rel="noreferrer" className="enlace-fuerte">Cómo llegar →</a></div>
+                        <div className="tarjeta pila-chica"><span className="sobretitulo">HORARIO</span>{TIENDA.horario.map((h) => <span key={h.dias}><strong>{h.dias}:</strong> {h.horas}</span>)}</div>
                         <div className="tarjeta pila-chica"><span className="sobretitulo">CONTACTO</span><a href={`mailto:${TIENDA.correo}`}>{TIENDA.correo}</a><span>{TIENDA.telefono}</span></div>
                     </div>
                 </div>
