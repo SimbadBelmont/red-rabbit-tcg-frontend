@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CONDICIONES, JUEGOS, crearCarta, scryfallAutocompletar, scryfallImpresiones, subirImagen } from '../../services/inventarioService';
+import { CONDICIONES, JUEGOS, PRODUCTOS, crearCarta, nombreCondicion, scryfallAutocompletar, scryfallExpansiones, scryfallImpresiones, subirImagen } from '../../services/inventarioService';
 import { nombreAcabado } from '../../utils/acabados';
 import { mxn } from '../../utils/formato';
 import { reducirImagen } from '../../utils/imagen';
@@ -13,11 +13,18 @@ const usd = (n) => (n == null ? 'sin precio' : `US$${n.toFixed(2)}`);
 // Alta manual de cartas. Magic: se busca en Scryfall y se elige la impresión exacta.
 // Otros juegos: formulario con foto opcional.
 export default function AgregarCarta() {
+    const [tipo, setTipo] = useState('carta');
     const [juego, setJuego] = useState('magic');
     const [mensaje, setMensaje] = useState(null);
 
     return (
         <div className="pila">
+            <div role="tablist" aria-label="Qué vas a agregar" className="pestanas">
+                {[['carta', 'Carta suelta'], ['sellado', 'Producto sellado']].map(([id, l]) => (
+                    <button key={id} type="button" role="tab" aria-selected={tipo === id} className={`pestana ${tipo === id ? 'activo' : ''}`}
+                        onClick={() => { setTipo(id); setMensaje(null); }}>{l}</button>
+                ))}
+            </div>
             <div className="fila-botones">
                 <label className="etiqueta etiqueta--linea">Juego
                     <select className="campo" value={juego} onChange={(e) => { setJuego(e.target.value); setMensaje(null); }}>
@@ -25,19 +32,22 @@ export default function AgregarCarta() {
                     </select>
                 </label>
                 <span className="texto-suave texto-chico">
-                    {juego === 'magic' ? 'Busca la carta por su nombre en inglés y elige la impresión exacta.' : 'Captura los datos y, si quieres, sube una foto de la carta.'}
+                    {tipo === 'sellado'
+                        ? 'Sobres, cajas, bundles, mazos, kits o accesorios. Sube una foto del producto para el catálogo.'
+                        : juego === 'magic' ? 'Busca la carta por su nombre en inglés y elige la impresión exacta.' : 'Captura los datos y, si quieres, sube una foto de la carta.'}
                 </span>
             </div>
             {mensaje && <p className={`alerta ${mensaje.tipo === 'ok' ? 'alerta--ok' : 'alerta--error'}`} role="status">{mensaje.texto}</p>}
-            {juego === 'magic'
+            {tipo === 'sellado' && <AltaSellado key={juego} juego={juego} onMensaje={setMensaje} />}
+            {tipo === 'carta' && (juego === 'magic'
                 ? <AltaMagic onMensaje={setMensaje} />
-                : <AltaManual key={juego} juego={juego} onMensaje={setMensaje} />}
+                : <AltaManual key={juego} juego={juego} onMensaje={setMensaje} />)}
         </div>
     );
 }
 
 const textoResultado = (r, datos) => {
-    const detalle = [datos.condicion, datos.acabado !== 'normal' && nombreAcabado(datos.acabado), datos.idioma?.toUpperCase()].filter(Boolean).join(' · ');
+    const detalle = [nombreCondicion(datos.condicion), datos.tipo !== 'sellado' && datos.acabado !== 'normal' && nombreAcabado(datos.acabado), datos.idioma?.toUpperCase()].filter(Boolean).join(' · ');
     return r.sumada
         ? `Se sumaron ${datos.stock} × ${r.carta.nombre} (${detalle}). Ahora hay ${r.carta.stock} en inventario.`
         : `Se agregó ${r.carta.nombre} (${detalle}) con ${r.carta.stock} en inventario.`;
@@ -179,20 +189,9 @@ function AltaMagic({ onMensaje }) {
 function AltaManual({ juego, onMensaje }) {
     const [datos, setDatos] = useState({ nombre: '', expansion: '', numero: '', rareza: '' });
     const [valores, setValores] = useState(BASE);
-    const [foto, setFoto] = useState(null);           // { url, vista }
-    const [subiendo, setSubiendo] = useState(false);
     const [guardando, setGuardando] = useState(false);
     const [error, setError] = useState('');
-
-    const elegirFoto = async (archivo) => {
-        if (!archivo) return;
-        setSubiendo(true); setError('');
-        try {
-            const reducida = await reducirImagen(archivo);
-            const { url } = await subirImagen(reducida);
-            setFoto({ url, vista: URL.createObjectURL(reducida) });
-        } catch (e) { setError(e.message || 'No se pudo subir la foto'); } finally { setSubiendo(false); }
-    };
+    const { foto, setFoto, subiendo, elegirFoto } = useFoto(setError);
 
     const guardar = async (e) => {
         e.preventDefault();
@@ -227,6 +226,118 @@ function AltaManual({ juego, onMensaje }) {
                 <span className="texto-suave texto-chico">Condición: {CONDICIONES[valores.condicion]}. Si ya existe esta carta con la misma condición, acabado e idioma, se suma al stock.</span>
                 {error && <p className="alerta alerta--error">{error}</p>}
                 {faltan.length > 0 && <span className="texto-error texto-chico">Falta: {faltan.join(', ')}</span>}
+                <div className="fila-botones">
+                    <button type="submit" className="btn btn--rojo" disabled={guardando || subiendo || faltan.length > 0 || Number(valores.stock) < 1}>{guardando ? 'Guardando…' : 'Agregar al inventario'}</button>
+                </div>
+            </div>
+        </form>
+    );
+}
+
+// Foto subida a la tienda (se reduce en el navegador antes de subirla)
+function useFoto(setError) {
+    const [foto, setFoto] = useState(null);           // { url, vista }
+    const [subiendo, setSubiendo] = useState(false);
+    const elegirFoto = async (archivo) => {
+        if (!archivo) return;
+        setSubiendo(true); setError('');
+        try {
+            const reducida = await reducirImagen(archivo);
+            const { url } = await subirImagen(reducida);
+            setFoto({ url, vista: URL.createObjectURL(reducida) });
+        } catch (e) { setError(e.message || 'No se pudo subir la foto'); } finally { setSubiendo(false); }
+    };
+    return { foto, setFoto, subiendo, elegirFoto };
+}
+
+const BASE_SELLADO = { tipo: 'sellado', producto: 'sobre', condicion: 'SELLADO', idioma: 'es', stock: 1, precio: '', acabado: 'normal' };
+
+function AltaSellado({ juego, onMensaje }) {
+    const [valores, setValores] = useState(BASE_SELLADO);
+    const [expansion, setExpansion] = useState(null);       // { codigo, nombre, icono } (Magic) o texto libre
+    const [textoExp, setTextoExp] = useState('');
+    const [sugerencias, setSugerencias] = useState([]);
+    const [nombre, setNombre] = useState('');
+    const [nombreEditado, setNombreEditado] = useState(false);
+    const [guardando, setGuardando] = useState(false);
+    const [error, setError] = useState('');
+    const { foto, setFoto, subiendo, elegirFoto } = useFoto(setError);
+    const esMagic = juego === 'magic';
+
+    // Magic: buscar la expansión en la lista de Scryfall
+    useEffect(() => {
+        if (!esMagic || expansion || textoExp.trim().length < 2) return undefined;
+        let vigente = true;
+        const t = setTimeout(() => {
+            scryfallExpansiones(textoExp.trim()).then((l) => vigente && setSugerencias(l)).catch(() => vigente && setSugerencias([]));
+        }, 300);
+        return () => { vigente = false; clearTimeout(t); };
+    }, [textoExp, expansion, esMagic]);
+
+    // Nombre sugerido: "Caja de sobres · Foundations" (se puede cambiar a mano)
+    const nombreExp = esMagic ? expansion?.nombre : textoExp.trim();
+    const sugerido = [PRODUCTOS[valores.producto], nombreExp].filter(Boolean).join(' · ');
+    const nombreFinal = nombreEditado ? nombre : sugerido;
+
+    const elegirExpansion = (e) => { setExpansion(e); setTextoExp(e.nombre); setSugerencias([]); };
+
+    const guardar = async (e) => {
+        e.preventDefault();
+        setGuardando(true); setError('');
+        const datos = limpiar({
+            ...valores, juego, nombre: nombreFinal,
+            expansion: esMagic ? expansion?.codigo : textoExp.trim() || undefined,
+            // Sin foto, en Magic se usa el símbolo de la expansión
+            imagen: foto?.url || (esMagic ? expansion?.icono : undefined),
+        });
+        try {
+            const r = await crearCarta(datos);
+            onMensaje({ tipo: 'ok', texto: textoResultado(r, datos) });
+            setValores({ ...BASE_SELLADO, producto: valores.producto });
+            setFoto(null); setNombreEditado(false); setNombre('');
+        } catch (err) { setError(err.message); } finally { setGuardando(false); }
+    };
+
+    const faltan = problemasDe({ ...valores, nombre: nombreFinal });
+
+    return (
+        <form className="tarjeta tarjeta--rosa alta" onSubmit={guardar}>
+            <div className="pila-chica">
+                <div className="alta__imagen alta__imagen--sellado">
+                    {foto ? <img src={foto.vista} alt="Foto del producto" />
+                        : esMagic && expansion?.icono ? <img src={expansion.icono} alt="" className="alta__icono" /> : <IconoCartaVacia />}
+                </div>
+                <input type="file" accept="image/*" capture="environment" id="foto-sellado" className="sr-only" onChange={(e) => elegirFoto(e.target.files[0])} />
+                <label htmlFor="foto-sellado" className="btn btn--contorno btn--chico"><IconoSubir size={16} /> {subiendo ? 'Subiendo…' : foto ? 'Cambiar foto' : 'Subir foto'}</label>
+                {!foto && esMagic && <span className="texto-suave texto-chico">Sin foto se mostrará el símbolo de la expansión.</span>}
+            </div>
+            <div className="pila">
+                <div className="buscador">
+                    <label className="etiqueta">Expansión
+                        <input className="campo" type="search" autoComplete="off" value={textoExp}
+                            placeholder={esMagic ? 'Ej. Foundations, Final Fantasy, MH3…' : 'Ej. Escarlata y Púrpura, OP-09…'}
+                            onChange={(e) => { setTextoExp(e.target.value); setExpansion(null); }} />
+                    </label>
+                    {sugerencias.length > 0 && (
+                        <ul className="buscador__lista" role="listbox" aria-label="Expansiones">
+                            {sugerencias.map((x) => (
+                                <li key={x.codigo}>
+                                    <button type="button" role="option" aria-selected="false" className="buscador__opcion buscador__opcion--expansion" onClick={() => elegirExpansion(x)}>
+                                        {x.icono && <img src={x.icono} alt="" />}<span>{x.nombre}</span><span className="texto-suave texto-chico">{x.codigo} · {x.fecha?.slice(0, 4)}</span>
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+                <label className="etiqueta">Nombre en el catálogo
+                    <input className="campo" required value={nombreFinal} placeholder="Ej. Caja de sobres de juego · Foundations"
+                        onChange={(e) => { setNombre(e.target.value); setNombreEditado(true); }} />
+                </label>
+                <CamposCarta id="alta-sellado" valores={valores} conIdioma onCambio={setValores} />
+                {error && <p className="alerta alerta--error">{error}</p>}
+                {faltan.length > 0 && <span className="texto-error texto-chico">Falta: {faltan.join(', ')}</span>}
+                <span className="texto-suave texto-chico">Si ya existe este producto con el mismo estado e idioma, se suma al stock.</span>
                 <div className="fila-botones">
                     <button type="submit" className="btn btn--rojo" disabled={guardando || subiendo || faltan.length > 0 || Number(valores.stock) < 1}>{guardando ? 'Guardando…' : 'Agregar al inventario'}</button>
                 </div>

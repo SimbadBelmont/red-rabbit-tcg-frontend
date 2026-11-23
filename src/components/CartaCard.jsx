@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { usePedido } from '../context/PedidoContext';
-import { CONDICIONES, nombreJuego } from '../services/inventarioService';
+import { PRODUCTOS, etiquetaCondicion, nombreCondicion, nombreJuego } from '../services/inventarioService';
 import { etiquetaAcabado } from '../utils/acabados';
 import { mxn } from '../utils/formato';
 import { IconoCartaVacia, IconoCheck } from './Iconos';
@@ -14,20 +14,21 @@ export default function CartaCard({ carta }) {
     const v = variantes.find((x) => x._id === elegidaId) || variantes[0];
     const dentro = estaEnPedido(v._id);
     const pocas = v.stock <= 2;
-    const acabado = etiquetaAcabado(carta.acabado);
+    const sellado = carta.tipo === 'sellado';
+    const acabado = sellado ? '' : etiquetaAcabado(carta.acabado);
 
     const agregarElegida = () => agregar({
         _id: v._id, nombre: carta.nombre, juego: carta.juego, imagen: carta.imagen,
-        precio: v.precio, stock: v.stock, condicion: v.condicion, acabado: carta.acabado, expansion: carta.expansion,
+        precio: v.precio, stock: v.stock, condicion: v.condicion, acabado: carta.acabado, expansion: carta.expansion, tipo: carta.tipo,
     });
 
     return (
         <article className="tarjeta carta">
-            <div className="carta__imagen">
+            <div className={`carta__imagen ${sellado ? 'carta__imagen--sellado' : ''}`}>
                 {carta.imagen
                     ? <img src={carta.imagen} alt={carta.nombre} loading="lazy" />
                     : <IconoCartaVacia />}
-                <span className="carta__juego">{nombreJuego(carta.juego)}</span>
+                <span className="carta__juego">{sellado ? `${PRODUCTOS[carta.producto] || 'Sellado'} · ${nombreJuego(carta.juego)}` : nombreJuego(carta.juego)}</span>
                 {acabado && <span className={`carta__acabado carta__acabado--${carta.acabado}`}>{acabado}</span>}
             </div>
             <div className="carta__cuerpo">
@@ -41,16 +42,18 @@ export default function CartaCard({ carta }) {
                 </div>
 
                 {variantes.length > 1 ? (
-                    <div role="radiogroup" aria-label={`Condición de ${carta.nombre}`} className="condiciones">
+                    <div role="radiogroup" aria-label={`${sellado ? 'Estado' : 'Condición'} de ${carta.nombre}`} className="condiciones">
                         {variantes.map((x) => (
-                            <button key={x._id} type="button" role="radio" aria-checked={x._id === v._id} title={CONDICIONES[x.condicion]}
+                            <button key={x._id} type="button" role="radio" aria-checked={x._id === v._id} title={nombreCondicion(x.condicion)}
                                 className={`condiciones__opcion ${x._id === v._id ? 'activo' : ''}`} onClick={() => setElegidaId(x._id)}>
-                                {x.condicion}
+                                {etiquetaCondicion(x.condicion)}
                             </button>
                         ))}
                     </div>
                 ) : (
-                    <span className="texto-chico texto-suave">Condición: <strong title={CONDICIONES[v.condicion]}>{v.condicion}</strong> · {CONDICIONES[v.condicion]}</span>
+                    <span className="texto-chico texto-suave">
+                        {sellado ? <>Estado: <strong>{nombreCondicion(v.condicion)}</strong></> : <>Condición: <strong title={nombreCondicion(v.condicion)}>{v.condicion}</strong> · {nombreCondicion(v.condicion)}</>}
+                    </span>
                 )}
 
                 <div className="carta__precio-fila">
@@ -61,7 +64,7 @@ export default function CartaCard({ carta }) {
                 </div>
                 {dentro
                     ? <button type="button" className="btn btn--rojo btn--bloque" aria-pressed="true" onClick={() => quitar(v._id)}><IconoCheck /> En tu pedido · Quitar</button>
-                    : <button type="button" className="btn btn--contorno-rojo btn--bloque" onClick={agregarElegida}>Agregar {v.condicion} al pedido</button>}
+                    : <button type="button" className="btn btn--contorno-rojo btn--bloque" onClick={agregarElegida}>{sellado ? 'Agregar al pedido' : `Agregar ${v.condicion} al pedido`}</button>}
             </div>
         </article>
     );

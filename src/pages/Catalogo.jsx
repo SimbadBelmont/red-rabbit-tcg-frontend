@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import CartaCard from '../components/CartaCard';
 import { ACABADOS } from '../utils/acabados';
-import { CONDICIONES, JUEGOS, catalogo } from '../services/inventarioService';
+import { CONDICIONES, JUEGOS, PRODUCTOS, catalogo } from '../services/inventarioService';
 
 const RAREZAS = [['common', 'Común'], ['uncommon', 'Infrecuente'], ['rare', 'Rara'], ['mythic', 'Mítica / Secreta']];
 const ORDENES = [['recientes', 'Más recientes'], ['precio_asc', 'Precio: menor a mayor'], ['precio_desc', 'Precio: mayor a menor'], ['nombre', 'Nombre A–Z']];
 
 export default function Catalogo() {
-    const [filtros, setFiltros] = useState({ juego: '', q: '', orden: 'recientes', rareza: [], condicion: [], acabado: [], pagina: 1 });
+    const [filtros, setFiltros] = useState({ juego: '', q: '', orden: 'recientes', rareza: [], condicion: [], acabado: [], tipo: '', producto: [], pagina: 1 });
     const [busqueda, setBusqueda] = useState('');
     const [datos, setDatos] = useState({ cartas: [], total: 0, paginas: 0 });
     const [error, setError] = useState('');
@@ -24,7 +24,7 @@ export default function Catalogo() {
 
     useEffect(() => {
         let vigente = true;
-        catalogo({ ...filtros, rareza: filtros.rareza.join(','), condicion: filtros.condicion.join(','), acabado: filtros.acabado.join(',') })
+        catalogo({ ...filtros, rareza: filtros.rareza.join(','), condicion: filtros.condicion.join(','), acabado: filtros.acabado.join(','), producto: filtros.producto.join(',') })
             .then((d) => { if (vigente) { setDatos(d); setError(''); } })
             .catch((e) => vigente && setError(e.message))
             .finally(() => vigente && setCargadoPara(JSON.stringify(filtros)));
@@ -42,7 +42,7 @@ export default function Catalogo() {
             <div className="encabezado-pagina">
                 <div className="pila-chica">
                     <h1 className="titulo-pagina">Catálogo</h1>
-                    <p className="texto-suave texto-grande">Solo cartas en existencia. Agrega lo que quieras a tu pedido y lo confirmamos por correo.</p>
+                    <p className="texto-suave texto-grande">Cartas sueltas y producto sellado en existencia. Agrega lo que quieras a tu pedido y lo confirmamos por correo.</p>
                 </div>
                 <div className="fila-botones">
                     <label className="sr-only" htmlFor="buscar">Buscar carta</label>
@@ -57,12 +57,29 @@ export default function Catalogo() {
             <div className="con-lateral">
                 <aside className="tarjeta lateral" aria-label="Filtros">
                     <div className="pila-chica">
+                        <h2 className="sobretitulo">QUÉ BUSCAS</h2>
+                        {[['', 'Todo'], ['carta', 'Cartas sueltas'], ['sellado', 'Producto sellado']].map(([v, l]) => (
+                            <button key={v || 'todo'} type="button" aria-pressed={filtros.tipo === v}
+                                className={`filtro ${filtros.tipo === v ? 'activo' : ''}`}
+                                onClick={() => setFiltros((f) => ({ ...f, tipo: v, producto: [], rareza: [], condicion: [], acabado: [], pagina: 1 }))}>{l}</button>
+                        ))}
+                    </div>
+                    <div className="pila-chica">
                         <h2 className="sobretitulo">JUEGO</h2>
                         {[{ id: '', nombre: 'Todos' }, ...JUEGOS].map((j) => (
                             <button key={j.id} type="button" aria-pressed={filtros.juego === j.id}
                                 className={`filtro ${filtros.juego === j.id ? 'activo' : ''}`} onClick={() => cambiar('juego', j.id)}>{j.nombre}</button>
                         ))}
                     </div>
+                    {filtros.tipo === 'sellado' ? (
+                        <fieldset className="pila-chica">
+                            <legend className="sobretitulo">PRODUCTO</legend>
+                            {Object.entries(PRODUCTOS).map(([v, l]) => (
+                                <label key={v} className="casilla"><input type="checkbox" checked={filtros.producto.includes(v)} onChange={() => alternar('producto', v)} />{l}</label>
+                            ))}
+                        </fieldset>
+                    ) : (
+                        <>
                     <fieldset className="pila-chica">
                         <legend className="sobretitulo">RAREZA</legend>
                         {RAREZAS.map(([v, l]) => (
@@ -81,6 +98,8 @@ export default function Catalogo() {
                             <label key={v} className="casilla"><input type="checkbox" checked={filtros.acabado.includes(v)} onChange={() => alternar('acabado', v)} />{l}</label>
                         ))}
                     </fieldset>
+                        </>
+                    )}
                 </aside>
 
                 <div className="contenido pila">

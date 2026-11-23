@@ -430,3 +430,12 @@ textarea.campo { resize: vertical; }
 .alta__imagen img { width: 100%; height: 100%; object-fit: contain; }
 .alta__cambiar { align-self: flex-start; padding-left: 0; }
 @media (max-width: 640px) { .alta { grid-template-columns: 1fr; } .alta__imagen { max-width: 220px; } }
+
+/* --- Producto sellado --- */
+.carta__imagen--sellado { aspect-ratio: 1 / 1; }
+.carta__imagen--sellado img { object-fit: contain; padding: 16px; }
+.alta__imagen--sellado { aspect-ratio: 1 / 1; }
+.alta__icono { width: 55% !important; height: 55% !important; opacity: .8; }
+.buscador__opcion--expansion { display: flex; align-items: center; gap: 10px; }
+.buscador__opcion--expansion img { width: 22px; height: 22px; }
+.buscador__opcion--expansion span:nth-child(2) { flex: 1; }

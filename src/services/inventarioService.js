@@ -11,6 +11,23 @@ export const JUEGOS = [
 export const nombreJuego = (id) => JUEGOS.find((j) => j.id === id)?.corto || id;
 
 export const CONDICIONES = { NM: 'Near Mint', LP: 'Lightly Played', MP: 'Moderately Played', HP: 'Heavily Played', DMG: 'Damaged' };
+// Producto sellado: estado en lugar de condición
+export const ESTADOS_SELLADO = { SELLADO: 'Sellado', DANADO: 'Empaque dañado', ABIERTO: 'Abierto' };
+export const PRODUCTOS = {
+    sobre: 'Sobre',
+    caja: 'Caja de sobres',
+    collector: 'Collector booster',
+    bundle: 'Bundle / Fat pack',
+    mazo: 'Mazo preconstruido',
+    kit: 'Kit de prerelease',
+    display: 'Display / Case',
+    accesorio: 'Accesorio',
+    otro: 'Otro producto',
+};
+// Texto corto de la condición o estado: "NM", "Sellado", "Empaque dañado"
+export const etiquetaCondicion = (c) => ESTADOS_SELLADO[c] || c;
+// Texto largo: "Near Mint", "Sellado"
+export const nombreCondicion = (c) => CONDICIONES[c] || ESTADOS_SELLADO[c] || c;
 
 export const catalogo = (filtros = {}) => {
     const params = new URLSearchParams(Object.entries(filtros).filter(([, v]) => v !== '' && v != null));
@@ -30,6 +47,7 @@ export const eliminarCarta = (id) => api(`/inventario/${id}`, { method: 'DELETE'
 export const crearCarta = (datos) => api('/inventario', { method: 'POST', body: datos });
 // Búsqueda en Scryfall (pasa por el backend, que respeta su límite de 2 consultas por segundo)
 export const scryfallAutocompletar = (q) => api(`/inventario/scryfall/autocompletar?q=${encodeURIComponent(q)}`);
+export const scryfallExpansiones = (q) => api(`/inventario/scryfall/expansiones?q=${encodeURIComponent(q)}`);
 export const scryfallImpresiones = (nombre) => api(`/inventario/scryfall/impresiones?nombre=${encodeURIComponent(nombre)}`);
 // Foto de carta (ya reducida en el navegador); devuelve { url }
 export const subirImagen = (archivo) => {

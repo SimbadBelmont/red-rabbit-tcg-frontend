@@ -3,6 +3,7 @@ import { catalogo, nombreJuego } from '../services/inventarioService';
 import { ventaPos } from '../services/pedidoService';
 import { mxn } from '../utils/formato';
 import { etiquetaAcabado } from '../utils/acabados';
+import { etiquetaCondicion } from '../services/inventarioService';
 
 // Venta de mostrador: busca, agrega y cobra. Descuenta el stock al registrar la venta.
 export default function PuntoVenta() {
@@ -48,7 +49,7 @@ export default function PuntoVenta() {
                     </form>
                     {resultados.map((c) => (
                         <div key={c._id} className="tarjeta fila-lista">
-                            <div className="pila-chica fila-lista__info"><strong>{c.nombre}</strong><span className="texto-suave texto-chico">{[nombreJuego(c.juego), c.expansion, c.condicion, etiquetaAcabado(c.acabado)].filter(Boolean).join(' · ')} · stock {c.stock}</span></div>
+                            <div className="pila-chica fila-lista__info"><strong>{c.nombre}</strong><span className="texto-suave texto-chico">{[nombreJuego(c.juego), c.expansion, etiquetaCondicion(c.condicion), etiquetaAcabado(c.acabado)].filter(Boolean).join(' · ')} · stock {c.stock}</span></div>
                             <strong>{mxn(c.precio)}</strong>
                             <button type="button" className="btn btn--contorno-rojo btn--chico" onClick={() => agregar(c)}>Agregar</button>
                         </div>
@@ -57,7 +58,7 @@ export default function PuntoVenta() {
                 <aside className="tarjeta lateral pila" aria-label="Venta actual">
                     <h2 className="titulo-tarjeta">Venta actual</h2>
                     {venta.map((i) => (
-                        <div key={i._id} className="total-fila texto-chico"><span>{i.cantidad} × {i.nombre} ({[i.condicion, etiquetaAcabado(i.acabado)].filter(Boolean).join(' · ')})</span><span>{mxn(i.precio * i.cantidad)}</span></div>
+                        <div key={i._id} className="total-fila texto-chico"><span>{i.cantidad} × {i.nombre} ({[etiquetaCondicion(i.condicion), etiquetaAcabado(i.acabado)].filter(Boolean).join(' · ')})</span><span>{mxn(i.precio * i.cantidad)}</span></div>
                     ))}
                     {venta.length === 0 && <p className="texto-suave">Sin artículos.</p>}
                     <div className="total-fila"><span>Total</span><strong>{mxn(total)}</strong></div>

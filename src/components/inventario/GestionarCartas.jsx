@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CONDICIONES, JUEGOS, actualizarCarta, eliminarCarta, listarInventario, nombreJuego } from '../../services/inventarioService';
+import { JUEGOS, PRODUCTOS, actualizarCarta, eliminarCarta, etiquetaCondicion, listarInventario, nombreCondicion, nombreJuego } from '../../services/inventarioService';
 import { mxn } from '../../utils/formato';
 import { etiquetaAcabado } from '../../utils/acabados';
 import { IconoCartaVacia } from '../Iconos';
@@ -10,7 +10,7 @@ const ESTADOS = [['activas', 'En catálogo'], ['agotadas', 'Agotadas'], ['baja',
 
 // Editor del personal: precio, stock, condición y baja de cartas existentes
 export default function GestionarCartas() {
-    const [filtros, setFiltros] = useState({ q: '', juego: '', estado: 'activas', pagina: 1 });
+    const [filtros, setFiltros] = useState({ q: '', juego: '', tipo: '', estado: 'activas', pagina: 1 });
     const [busqueda, setBusqueda] = useState('');
     const [datos, setDatos] = useState({ cartas: [], total: 0, paginas: 0 });
     const [recarga, setRecarga] = useState(0);
@@ -39,8 +39,8 @@ export default function GestionarCartas() {
         const { id, valores } = editando;
         setOcupado(id); setMensaje(null);
         try {
-            const { precio, stock, condicion, acabado = 'normal', idioma } = limpiar(valores);
-            const carta = await actualizarCarta(id, { precio, stock, condicion, acabado, idioma });
+            const { precio, stock, condicion, acabado = 'normal', idioma, producto, tipo } = limpiar(valores);
+            const carta = await actualizarCarta(id, tipo === 'sellado' ? { precio, stock, condicion, idioma, producto } : { precio, stock, condicion, acabado, idioma });
             reemplazarEnLista(carta);
             setEditando(null);
             setMensaje({ tipo: 'ok', texto: `${carta.nombre}: guardado.` });
@@ -86,6 +86,10 @@ export default function GestionarCartas() {
                     <option value="">Todos los juegos</option>
                     {JUEGOS.map((j) => <option key={j.id} value={j.id}>{j.nombre}</option>)}
                 </select>
+                <label className="sr-only" htmlFor="inv-tipo">Tipo</label>
+                <select id="inv-tipo" className="campo" value={filtros.tipo} onChange={(e) => cambiar('tipo', e.target.value)}>
+                    <option value="">Cartas y sellado</option><option value="carta">Solo cartas</option><option value="sellado">Solo producto sellado</option>
+                </select>
             </div>
             <div role="tablist" aria-label="Estado de las cartas" className="pestanas">
                 {ESTADOS.map(([id, l]) => (
@@ -122,11 +126,11 @@ export default function GestionarCartas() {
                                         <span className="carta-fila__mini">{c.imagen ? <img src={c.imagen} alt="" loading="lazy" /> : <IconoCartaVacia />}</span>
                                         <div className="pila-chica">
                                             <strong>{c.nombre}</strong>
-                                            <span className="texto-suave texto-chico">{nombreJuego(c.juego)} · {c.expansion} {c.numero}{etiquetaAcabado(c.acabado) ? ` · ${etiquetaAcabado(c.acabado)}` : ''}{c.idioma ? ` · ${c.idioma.toUpperCase()}` : ''}</span>
+                                            <span className="texto-suave texto-chico">{c.tipo === 'sellado' ? `${PRODUCTOS[c.producto] || 'Sellado'} · ` : ''}{nombreJuego(c.juego)} · {c.expansion} {c.numero}{etiquetaAcabado(c.acabado) ? ` · ${etiquetaAcabado(c.acabado)}` : ''}{c.idioma ? ` · ${c.idioma.toUpperCase()}` : ''}</span>
                                         </div>
                                     </div>
                                 </td>
-                                <td title={CONDICIONES[c.condicion]}>{c.condicion}</td>
+                                <td title={nombreCondicion(c.condicion)}>{etiquetaCondicion(c.condicion)}</td>
                                 <td>{mxn(c.precio)}</td>
                                 <td>
                                     <div className="stock-control">

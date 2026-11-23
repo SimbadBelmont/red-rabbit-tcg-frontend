@@ -6,6 +6,7 @@ import { crearPedido } from '../services/pedidoService';
 import { nombreJuego } from '../services/inventarioService';
 import { mxn } from '../utils/formato';
 import { etiquetaAcabado } from '../utils/acabados';
+import { etiquetaCondicion } from '../services/inventarioService';
 import { IconoCheck } from '../components/Iconos';
 
 // Carrito + cómo pedir en una sola página. Los pasos quedan como guía corta arriba.
@@ -84,7 +85,7 @@ export default function MiPedido() {
                             <div className="linea-pedido__miniatura">{i.imagen && <img src={i.imagen} alt="" />}</div>
                             <div className="linea-pedido__info">
                                 <strong>{i.nombre}</strong>
-                                <span className="texto-suave texto-chico">{[nombreJuego(i.juego), i.expansion, i.condicion, etiquetaAcabado(i.acabado)].filter(Boolean).join(' · ')} · {mxn(i.precio)} c/u</span>
+                                <span className="texto-suave texto-chico">{[nombreJuego(i.juego), i.expansion, etiquetaCondicion(i.condicion), etiquetaAcabado(i.acabado)].filter(Boolean).join(' · ')} · {mxn(i.precio)} c/u</span>
                             </div>
                             <label className="sr-only" htmlFor={`cant-${i._id}`}>Cantidad de {i.nombre}</label>
                             <input id={`cant-${i._id}`} type="number" min="0" max={i.stock} className="campo campo--cantidad"
