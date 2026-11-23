@@ -12,6 +12,8 @@ import Login from './pages/Login';
 import MiCuenta from './pages/MiCuenta';
 import Inventario from './pages/Inventario';
 import PuntoVenta from './pages/PuntoVenta';
+import Usuarios from './pages/Usuarios';
+import Reportes from './pages/Reportes';
 import { useAuth } from './context/AuthContext';
 
 function App() {
@@ -37,8 +39,13 @@ function App() {
           <Route path="/mi-cuenta" element={<RutaProtegida><MiCuenta /></RutaProtegida>} />
 
           {/* Solo personal de la tienda */}
-          <Route path="/inventario" element={<RutaProtegida roles={['staff', 'admin']}><Inventario /></RutaProtegida>} />
-          <Route path="/punto-de-venta" element={<RutaProtegida roles={['staff', 'admin']}><PuntoVenta /></RutaProtegida>} />
+          <Route path="/inventario" element={<RutaProtegida roles={['staff', 'encargado', 'admin']}><Inventario /></RutaProtegida>} />
+          <Route path="/punto-de-venta" element={<RutaProtegida roles={['staff', 'encargado', 'admin']}><PuntoVenta /></RutaProtegida>} />
+
+          {/* Encargado y administrador */}
+          <Route path="/reportes" element={<RutaProtegida roles={['encargado', 'admin']}><Reportes /></RutaProtegida>} />
+          {/* Solo administrador */}
+          <Route path="/usuarios" element={<RutaProtegida roles={['admin']}><Usuarios /></RutaProtegida>} />
 
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

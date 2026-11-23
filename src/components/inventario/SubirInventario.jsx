@@ -66,7 +66,7 @@ export default function SubirInventario() {
         try {
             // eslint-disable-next-line no-unused-vars
             const cartas = listas.map(({ clave, linea, problemas, precioOriginal, ...c }) => limpiar(c));
-            const r = await importarLote(cartas, modo);
+            const r = await importarLote(cartas, modo, archivo?.name);
             setResultado({ ...r, omitidas: porCorregir.length });
             setVista(null); setArchivo(null); setFilas([]);
         } catch (e) { setError(e.message); } finally { setCargando(false); }

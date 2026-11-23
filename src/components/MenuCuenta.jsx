@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { nombreRol } from '../utils/roles';
 
 const SECCIONES = [
     { seccion: 'wishlist', texto: 'Mi wishlist', icono: '♥' },
@@ -8,11 +9,13 @@ const SECCIONES = [
     { seccion: 'eventos', texto: 'Mis eventos', icono: '🏆' },
     { seccion: 'ajustes', texto: 'Ajustes de cuenta', icono: '⚙' },
 ];
+// Enlaces de la tienda según el rol de la cuenta
 const STAFF = [
-    { to: '/inventario', texto: 'Inventario', icono: '📦' },
-    { to: '/punto-de-venta', texto: 'Punto de venta', icono: '🛒' },
+    { to: '/inventario', texto: 'Inventario', icono: '📦', roles: ['staff', 'encargado', 'admin'] },
+    { to: '/punto-de-venta', texto: 'Punto de venta', icono: '🛒', roles: ['staff', 'encargado', 'admin'] },
+    { to: '/reportes', texto: 'Ventas por empleado', icono: '📊', roles: ['encargado', 'admin'] },
+    { to: '/usuarios', texto: 'Usuarios', icono: '👥', roles: ['admin'] },
 ];
-const ROLES = { admin: 'Administrador', staff: 'Staff', cliente: 'Cliente' };
 
 const iniciales = (nombre = '') =>
     nombre.trim().split(/\s+/).slice(0, 2).map((p) => p.charAt(0).toUpperCase()).join('') || '?';
@@ -70,7 +73,7 @@ export default function MenuCuenta({ onNavegar }) {
                         <div className="menu-cuenta__datos">
                             <strong title={user.nombre}>{user.nombre}</strong>
                             <span title={user.email}>{user.email}</span>
-                            <span className={`menu-cuenta__rol rol--${user.rol}`}>{ROLES[user.rol] || user.rol}</span>
+                            <span className={`menu-cuenta__rol rol--${user.rol}`}>{nombreRol(user.rol)}</span>
                         </div>
                     </div>
 
@@ -91,7 +94,7 @@ export default function MenuCuenta({ onNavegar }) {
                     {esStaff && (
                         <div className="menu-cuenta__grupo">
                             <span className="menu-cuenta__titulo">Tienda</span>
-                            {STAFF.map((s) => (
+                            {STAFF.filter((s) => s.roles.includes(user.rol)).map((s) => (
                                 <Link key={s.to} role="menuitem" to={s.to} className={`menu-cuenta__item ${location.pathname === s.to ? 'activo' : ''}`} onClick={elegir}>
                                     <span className="menu-cuenta__icono" aria-hidden="true">{s.icono}</span>{s.texto}
                                 </Link>

@@ -29,7 +29,10 @@ export const AuthProvider = ({ children }) => {
         setSalio(true);
         setUser(null);
     };
-    const esStaff = user?.rol === 'staff' || user?.rol === 'admin';
+    // cliente < staff (empleado) < encargado < admin
+    const esStaff = ['staff', 'encargado', 'admin'].includes(user?.rol);
+    const esGestion = ['encargado', 'admin'].includes(user?.rol);   // reportes por empleado
+    const esAdmin = user?.rol === 'admin';                          // gestión de usuarios
 
     // Ventana emergente de acceso: modo 'login' o 'registro'; 'desde' = a dónde ir al entrar
     const [acceso, setAcceso] = useState({ abierto: false, modo: 'login', desde: null });
@@ -37,7 +40,7 @@ export const AuthProvider = ({ children }) => {
     const cerrarAcceso = useCallback(() => setAcceso((a) => ({ ...a, abierto: false })), []);
 
     return (
-        <AuthContext.Provider value={{ user, setUser, login, registrar, logout, salio, esStaff, acceso, abrirAcceso, cerrarAcceso }}>
+        <AuthContext.Provider value={{ user, setUser, login, registrar, logout, salio, esStaff, esGestion, esAdmin, acceso, abrirAcceso, cerrarAcceso }}>
             {children}
         </AuthContext.Provider>
     );
