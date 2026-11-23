@@ -33,6 +33,10 @@ export const catalogo = (filtros = {}) => {
     const params = new URLSearchParams(Object.entries(filtros).filter(([, v]) => v !== '' && v != null));
     return api(`/inventario/catalogo?${params}`);
 };
+// Una carta con todas sus condiciones (página propia)
+export const verCarta = (id) => api(`/inventario/${id}`);
+// Enlace con vista previa (imagen y precio) para WhatsApp/Facebook
+export const urlCompartir = (id) => `${window.location.origin}/api/compartir/${id}`;
 export const recientes = (cantidad = 8) => api(`/inventario/recientes?cantidad=${cantidad}`);
 
 // --- Staff ---
@@ -55,8 +59,11 @@ export const subirImagen = (archivo) => {
     fd.append('imagen', archivo, archivo.name || 'foto.jpg');
     return api('/inventario/imagenes', { method: 'POST', body: fd });
 };
+// Actualizar precios de Magic con el mercado (vista previa y aplicar)
+export const previsualizarPrecios = () => api('/inventario/precios/previsualizar', { method: 'POST' });
+export const aplicarPrecios = (cambios) => api('/inventario/precios/aplicar', { method: 'POST', body: { cambios } });
 // Guarda las filas de la vista previa ya corregidas
-export const importarLote = (cartas, modo, archivo) => api('/inventario/lote', { method: 'POST', body: { cartas, modo, archivo } });
+export const importarLote = (cartas, modo, archivo, proveedor) => api('/inventario/lote', { method: 'POST', body: { cartas, modo, archivo, proveedor } });
 
 const formCsv = (archivo, extra = {}) => {
     const fd = new FormData();

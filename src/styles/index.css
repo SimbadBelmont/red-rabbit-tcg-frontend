@@ -439,3 +439,32 @@ textarea.campo { resize: vertical; }
 .buscador__opcion--expansion { display: flex; align-items: center; gap: 10px; }
 .buscador__opcion--expansion img { width: 22px; height: 22px; }
 .buscador__opcion--expansion span:nth-child(2) { flex: 1; }
+
+/* --- Panel de pedidos (staff) --- */
+.pedido-staff { display: flex; flex-direction: column; gap: 10px; }
+.pedido-staff__cabeza { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: flex-start; }
+.pedido-staff__folio { font-family: var(--fuente-titulos); font-size: 17px; }
+.pedido-staff__cliente { flex: 1 1 220px; min-width: 0; }
+.pedido-staff__cliente a { word-break: break-all; }
+.pedido-staff__total { align-items: flex-end; text-align: right; }
+.pedido-staff__total strong { font-family: var(--fuente-titulos); font-size: 20px; }
+.pedido-staff .pedido__items { padding: 0; border-top: 1px solid var(--borde); }
+.pedido-staff__notas { background: var(--rosa-claro); padding: 10px 12px; border-radius: 10px; }
+.pastilla--boton { border: 0; cursor: pointer; font-family: var(--fuente); }
+
+/* --- Página de carta --- */
+.carta__enlace { color: inherit; }
+.carta__enlace:hover { color: var(--rojo-texto); }
+.detalle { display: grid; grid-template-columns: minmax(240px, 420px) minmax(0, 1fr); gap: 40px; align-items: start; }
+.detalle__imagen { aspect-ratio: 488 / 680; border-radius: 18px; background: var(--rosa); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.detalle__imagen img { width: 100%; height: 100%; object-fit: contain; }
+.detalle__imagen--sellado { aspect-ratio: 1 / 1; }
+.detalle__imagen--sellado img { padding: 24px; }
+.detalle__precio { font-family: var(--fuente-display); font-size: 40px; }
+.condiciones--grandes .condiciones__opcion { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 10px 14px; min-width: 120px; }
+.condiciones--grandes .condiciones__opcion span { font-weight: 500; font-size: 12px; }
+@media (max-width: 760px) { .detalle { grid-template-columns: 1fr; } .detalle__imagen { max-width: 340px; } }
+
+/* --- Datos de compra y recuperar contraseña --- */
+.compra summary { cursor: pointer; color: var(--suave); font-weight: 600; margin-bottom: 8px; }
+.enlace-boton--derecha { align-self: flex-end; font-size: 13px; margin-top: -6px; }

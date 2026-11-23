@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { usePedido } from '../context/PedidoContext';
 import { PRODUCTOS, etiquetaCondicion, nombreCondicion, nombreJuego } from '../services/inventarioService';
 import { etiquetaAcabado } from '../utils/acabados';
@@ -24,16 +25,16 @@ export default function CartaCard({ carta }) {
 
     return (
         <article className="tarjeta carta">
-            <div className={`carta__imagen ${sellado ? 'carta__imagen--sellado' : ''}`}>
+            <Link to={`/carta/${v._id}`} className={`carta__imagen ${sellado ? 'carta__imagen--sellado' : ''}`} aria-label={`Ver ${carta.nombre}`}>
                 {carta.imagen
                     ? <img src={carta.imagen} alt={carta.nombre} loading="lazy" />
                     : <IconoCartaVacia />}
                 <span className="carta__juego">{sellado ? `${PRODUCTOS[carta.producto] || 'Sellado'} · ${nombreJuego(carta.juego)}` : nombreJuego(carta.juego)}</span>
                 {acabado && <span className={`carta__acabado carta__acabado--${carta.acabado}`}>{acabado}</span>}
-            </div>
+            </Link>
             <div className="carta__cuerpo">
                 <div>
-                    <h3 className="carta__nombre">{carta.nombre}</h3>
+                    <h3 className="carta__nombre"><Link to={`/carta/${v._id}`} className="carta__enlace">{carta.nombre}</Link></h3>
                     <span className="texto-suave texto-chico">
                         {[carta.expansion && `${carta.expansion}${carta.numero ? ` ${carta.numero}` : ''}`, carta.idioma && carta.idioma.toUpperCase()].filter(Boolean).join(' · ')}
                     </span>

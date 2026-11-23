@@ -15,6 +15,7 @@ const PUBLICAS = [
 ];
 // Solo aparecen con una cuenta de la tienda
 const STAFF = [
+    { to: '/gestion/pedidos', label: 'Pedidos' },
     { to: '/inventario', label: 'Inventario' },
     { to: '/punto-de-venta', label: 'Punto de Venta' },
 ];

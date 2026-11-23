@@ -2,8 +2,9 @@ import { useSearchParams } from 'react-router-dom';
 import SubirInventario from '../components/inventario/SubirInventario';
 import GestionarCartas from '../components/inventario/GestionarCartas';
 import AgregarCarta from '../components/inventario/AgregarCarta';
+import ActualizarPrecios from '../components/inventario/ActualizarPrecios';
 
-const VISTAS = [['gestionar', 'Gestionar cartas'], ['agregar', 'Agregar carta'], ['subir', 'Subir inventario']];
+const VISTAS = [['gestionar', 'Gestionar cartas'], ['agregar', 'Agregar carta'], ['subir', 'Subir inventario'], ['precios', 'Actualizar precios']];
 
 // Solo staff/admin. La pestaña va en la URL (?vista=subir) para poder enlazarla.
 export default function Inventario() {
@@ -25,6 +26,7 @@ export default function Inventario() {
             {vista === 'subir' && <SubirInventario />}
             {vista === 'agregar' && <AgregarCarta />}
             {vista === 'gestionar' && <GestionarCartas />}
+            {vista === 'precios' && <ActualizarPrecios />}
         </div>
     );
 }

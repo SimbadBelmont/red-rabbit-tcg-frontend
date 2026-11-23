@@ -14,6 +14,10 @@ import Inventario from './pages/Inventario';
 import PuntoVenta from './pages/PuntoVenta';
 import Usuarios from './pages/Usuarios';
 import Reportes from './pages/Reportes';
+import GestionPedidos from './pages/GestionPedidos';
+import GestionEventos from './pages/GestionEventos';
+import CartaDetalle from './pages/CartaDetalle';
+import Restablecer from './pages/Restablecer';
 import { useAuth } from './context/AuthContext';
 
 function App() {
@@ -27,6 +31,8 @@ function App() {
           {/* Públicas: cada sección es su propia página */}
           <Route path="/" element={<Inicio />} />
           <Route path="/catalogo" element={<Catalogo />} />
+          <Route path="/carta/:id" element={<CartaDetalle />} />
+          <Route path="/restablecer" element={<Restablecer />} />
           <Route path="/eventos" element={<Eventos />} />
           <Route path="/pedido" element={<MiPedido />} />
           <Route path="/como-pedir" element={<Navigate to="/pedido" replace />} />
@@ -41,6 +47,9 @@ function App() {
           {/* Solo personal de la tienda */}
           <Route path="/inventario" element={<RutaProtegida roles={['staff', 'encargado', 'admin']}><Inventario /></RutaProtegida>} />
           <Route path="/punto-de-venta" element={<RutaProtegida roles={['staff', 'encargado', 'admin']}><PuntoVenta /></RutaProtegida>} />
+
+          <Route path="/gestion/pedidos" element={<RutaProtegida roles={['staff', 'encargado', 'admin']}><GestionPedidos /></RutaProtegida>} />
+          <Route path="/gestion/eventos" element={<RutaProtegida roles={['staff', 'encargado', 'admin']}><GestionEventos /></RutaProtegida>} />
 
           {/* Encargado y administrador */}
           <Route path="/reportes" element={<RutaProtegida roles={['encargado', 'admin']}><Reportes /></RutaProtegida>} />

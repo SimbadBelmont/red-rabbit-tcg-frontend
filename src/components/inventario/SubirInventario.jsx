@@ -24,6 +24,7 @@ export default function SubirInventario() {
     const [pagina, setPagina] = useState(1);
     const [editando, setEditando] = useState(null);   // { clave, valores }
     const [modo, setModo] = useState('sumar');
+    const [proveedor, setProveedor] = useState('');
     const [resultado, setResultado] = useState(null);
     const [error, setError] = useState('');
     const [cargando, setCargando] = useState(false);
@@ -67,7 +68,7 @@ export default function SubirInventario() {
         try {
             // eslint-disable-next-line no-unused-vars
             const cartas = listas.map(({ clave, linea, problemas, precioOriginal, ...c }) => limpiar(c));
-            const r = await importarLote(cartas, modo, archivo?.name);
+            const r = await importarLote(cartas, modo, archivo?.name, proveedor.trim() || undefined);
             setResultado({ ...r, omitidas: porCorregir.length });
             setVista(null); setArchivo(null); setFilas([]);
         } catch (e) { setError(e.message); } finally { setCargando(false); }
@@ -186,6 +187,10 @@ export default function SubirInventario() {
                         </nav>
                     )}
 
+                    <label className="etiqueta etiqueta--linea">Comprada a (opcional)
+                        <input className="campo campo--chico" maxLength={80} placeholder="Ej. Colección de Juan, distribuidor…" value={proveedor} onChange={(e) => setProveedor(e.target.value)} />
+                    </label>
+                    {filas.some((f) => f.costo != null) && <span className="texto-suave texto-chico">El CSV trae costos de compra: se usarán para calcular la ganancia en los reportes.</span>}
                     <fieldset className="fila-botones">
                         <legend className="sobretitulo">SI LA CARTA YA EXISTE EN EL INVENTARIO</legend>
                         <label className="casilla"><input type="radio" name="modo" checked={modo === 'sumar'} onChange={() => setModo('sumar')} />Sumar al stock actual</label>

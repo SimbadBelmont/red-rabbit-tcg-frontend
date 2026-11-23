@@ -19,4 +19,11 @@ export function problemasDe(c) {
 }
 
 // Convierte los valores de los campos (texto) a números antes de guardar
-export const limpiar = (c) => ({ ...c, precio: Number(c.precio), stock: Number(c.stock) });
+export const limpiar = (c) => ({
+    ...c,
+    precio: Number(c.precio),
+    stock: Number(c.stock),
+    // Costo opcional: vacío = sin costo (no 0)
+    costo: c.costo === '' || c.costo == null ? undefined : Number(c.costo),
+    proveedor: c.proveedor ? String(c.proveedor).trim() : undefined,
+});

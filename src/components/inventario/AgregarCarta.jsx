@@ -5,6 +5,7 @@ import { mxn } from '../../utils/formato';
 import { reducirImagen } from '../../utils/imagen';
 import { IconoCartaVacia, IconoSubir } from '../Iconos';
 import CamposCarta from './CamposCarta';
+import CamposCompra from './CamposCompra';
 import { limpiar, problemasDe } from './editorCarta';
 
 const BASE = { condicion: 'NM', idioma: 'es', stock: 1, precio: '', acabado: 'normal' };
@@ -174,6 +175,7 @@ function AltaMagic({ onMensaje }) {
                         </fieldset>
 
                         <CamposCarta id="alta-magic" valores={valores} conIdioma conAcabado={false} onCambio={setValores} />
+                        <CamposCompra valores={valores} onCambio={setValores} />
                         {faltan.length > 0 && <span className="texto-error texto-chico">Falta: {faltan.join(', ')}</span>}
                         <div className="fila-botones">
                             <button type="submit" className="btn btn--rojo" disabled={cargando || faltan.length > 0 || Number(valores.stock) < 1}>{cargando ? 'Guardando…' : 'Agregar al inventario'}</button>
@@ -223,6 +225,7 @@ function AltaManual({ juego, onMensaje }) {
                     <label className="etiqueta">Rareza<input className="campo" {...campo('rareza')} placeholder="Ej. rare, SR, secret" /></label>
                 </div>
                 <CamposCarta id="alta-manual" valores={valores} conIdioma onCambio={setValores} />
+                        <CamposCompra valores={valores} onCambio={setValores} />
                 <span className="texto-suave texto-chico">Condición: {CONDICIONES[valores.condicion]}. Si ya existe esta carta con la misma condición, acabado e idioma, se suma al stock.</span>
                 {error && <p className="alerta alerta--error">{error}</p>}
                 {faltan.length > 0 && <span className="texto-error texto-chico">Falta: {faltan.join(', ')}</span>}
@@ -335,6 +338,7 @@ function AltaSellado({ juego, onMensaje }) {
                         onChange={(e) => { setNombre(e.target.value); setNombreEditado(true); }} />
                 </label>
                 <CamposCarta id="alta-sellado" valores={valores} conIdioma onCambio={setValores} />
+                        <CamposCompra valores={valores} onCambio={setValores} />
                 {error && <p className="alerta alerta--error">{error}</p>}
                 {faltan.length > 0 && <span className="texto-error texto-chico">Falta: {faltan.join(', ')}</span>}
                 <span className="texto-suave texto-chico">Si ya existe este producto con el mismo estado e idioma, se suma al stock.</span>

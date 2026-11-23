@@ -11,8 +11,10 @@ const SECCIONES = [
 ];
 // Enlaces de la tienda según el rol de la cuenta
 const STAFF = [
+    { to: '/gestion/pedidos', texto: 'Pedidos de clientes', icono: '📬', roles: ['staff', 'encargado', 'admin'] },
     { to: '/inventario', texto: 'Inventario', icono: '📦', roles: ['staff', 'encargado', 'admin'] },
     { to: '/punto-de-venta', texto: 'Punto de venta', icono: '🛒', roles: ['staff', 'encargado', 'admin'] },
+    { to: '/gestion/eventos', texto: 'Gestionar eventos', icono: '🗓', roles: ['staff', 'encargado', 'admin'] },
     { to: '/reportes', texto: 'Ventas por empleado', icono: '📊', roles: ['encargado', 'admin'] },
     { to: '/usuarios', texto: 'Usuarios', icono: '👥', roles: ['admin'] },
 ];
