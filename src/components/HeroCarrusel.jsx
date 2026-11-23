@@ -35,7 +35,7 @@ const ILUSTRACIONES = [
 const SLIDES = [
     { etiqueta: 'Tienda de cartas en Cuernavaca', titulo: 'Cartas, torneos y comunidad en un solo lugar.', texto: 'Consulta el inventario en tiempo real, aparta tus cartas por correo y reserva tu lugar en los torneos.', cta1: ['Ver catálogo', '/catalogo'], cta2: ['Próximos eventos', '/eventos'] },
     { etiqueta: 'Torneos cada semana', titulo: 'Juega Friday Night Magic con nosotros.', texto: 'Torneos, prereleases y ligas de Magic, Pokémon y One Piece. Reserva tu lugar desde la página.', cta1: ['Ver eventos', '/eventos'], cta2: ['Crear mi cuenta', '/registro'] },
-    { etiqueta: 'Pedidos por correo', titulo: 'Aparta tus cartas sin salir de casa.', texto: 'Elige del catálogo, envía tu pedido y te confirmamos por correo. Pagas al recoger en tienda.', cta1: ['Cómo pedir', '/como-pedir'], cta2: ['Ver catálogo', '/catalogo'] },
+    { etiqueta: 'Pedidos por correo', titulo: 'Aparta tus cartas sin salir de casa.', texto: 'Elige del catálogo, envía tu pedido y te confirmamos por correo. Pagas al recoger en tienda.', cta1: ['Ir a mi pedido', '/pedido'], cta2: ['Ver catálogo', '/catalogo'] },
 ];
 const ETIQUETAS = ['Bienvenida', 'Torneos', 'Pedidos'];
 

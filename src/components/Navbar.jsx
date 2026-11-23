@@ -11,7 +11,6 @@ const PUBLICAS = [
     { to: '/', label: 'Inicio', end: true },
     { to: '/catalogo', label: 'Catálogo' },
     { to: '/eventos', label: 'Eventos' },
-    { to: '/como-pedir', label: 'Cómo pedir' },
     { to: '/contacto', label: 'Contacto' },
 ];
 // Solo aparecen con una cuenta de la tienda
@@ -45,10 +44,13 @@ export default function Navbar() {
                 </nav>
 
                 <div className="navbar__acciones">
-                    <Link to="/como-pedir" className="navbar__carrito" aria-label={`Mi pedido (${cantidad})`}>
-                        <IconoCarrito />
-                        {cantidad > 0 && <span className="navbar__burbuja">{cantidad}</span>}
-                    </Link>
+                    <NavLink to="/pedido" className="navbar__carrito" aria-label={`Mi pedido, ${cantidad} ${cantidad === 1 ? 'carta' : 'cartas'}`}>
+                        <span className="navbar__carrito-icono">
+                            <IconoCarrito />
+                            {cantidad > 0 && <span className="navbar__burbuja">{cantidad}</span>}
+                        </span>
+                        <span className="navbar__carrito-texto">Mi pedido</span>
+                    </NavLink>
                     {user ? (
                         <MenuCuenta onNavegar={() => setAbierto(false)} />
                     ) : (

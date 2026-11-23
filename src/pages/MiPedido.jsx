@@ -7,17 +7,19 @@ import { nombreJuego } from '../services/inventarioService';
 import { mxn } from '../utils/formato';
 import { IconoCheck } from '../components/Iconos';
 
+// Carrito + cómo pedir en una sola página. Los pasos quedan como guía corta arriba.
 const PASOS = [
-    { titulo: 'Elige del catálogo', texto: 'Busca por juego, expansión o rareza. Solo ves lo que hay en existencia.' },
-    { titulo: 'Envía tu pedido', texto: 'Al confirmar, a ti y a la tienda les llega un correo con el detalle y se apartan las cartas.' },
-    { titulo: 'Recoge y paga en tienda', texto: 'Te avisamos por correo cuando esté listo. Pagas al recoger en Cuernavaca.' },
+    { titulo: 'Elige del catálogo', texto: 'Solo ves lo que hay en existencia.' },
+    { titulo: 'Envía tu pedido', texto: 'Te llega un correo y apartamos las cartas.' },
+    { titulo: 'Recoge y paga en tienda', texto: 'Te avisamos cuando esté listo.' },
 ];
 
-export default function ComoPedir() {
+export default function MiPedido() {
     const { items, cambiarCantidad, quitar, vaciar, total } = usePedido();
     const { user } = useAuth();
     const [form, setForm] = useState({ nombre: user?.nombre || '', email: user?.email || '', telefono: user?.telefono || '', notas: '' });
     const [enviando, setEnviando] = useState(false);
+    const [confirmarVaciar, setConfirmarVaciar] = useState(false);
     const [error, setError] = useState('');
     const [pedido, setPedido] = useState(null);
 
@@ -45,22 +47,34 @@ export default function ComoPedir() {
     return (
         <div className="contenedor pagina">
             <div className="pila-chica">
-                <h1 className="titulo-pagina">Cómo pedir tus cartas</h1>
-                <p className="texto-suave texto-grande">Sin pagos en línea: apartas desde la página y confirmamos por correo.</p>
+                <h1 className="titulo-pagina">Mi pedido</h1>
+                <p className="texto-suave texto-grande">Sin pagos en línea: apartas tus cartas aquí y confirmamos por correo. Pagas al recoger.</p>
             </div>
-            <div className="rejilla rejilla--260">
+            <ol className="pasos-compactos" aria-label="Cómo funciona">
                 {PASOS.map((p, i) => (
-                    <div key={p.titulo} className="tarjeta paso">
-                        <span className="paso__numero">{i + 1}</span>
-                        <h2 className="paso__titulo">{p.titulo}</h2>
-                        <p className="texto-suave">{p.texto}</p>
-                    </div>
+                    <li key={p.titulo} className="pasos-compactos__paso">
+                        <span className="paso__numero paso__numero--chico">{i + 1}</span>
+                        <span className="pila-chica"><strong>{p.titulo}</strong><span className="texto-suave texto-chico">{p.texto}</span></span>
+                    </li>
                 ))}
-            </div>
+            </ol>
 
             <div className="con-lateral con-lateral--derecha">
                 <section className="tarjeta contenido pila" aria-labelledby="pedido-t">
-                    <h2 id="pedido-t" className="titulo-tarjeta">Tu pedido</h2>
+                    <div className="encabezado-seccion">
+                        <h2 id="pedido-t" className="titulo-tarjeta">Cartas en tu pedido</h2>
+                        {items.length > 0 && (
+                            confirmarVaciar ? (
+                                <span className="fila-botones">
+                                    <span className="texto-chico">¿Quitar todas?</span>
+                                    <button type="button" className="btn btn--rojo btn--chico" onClick={() => { vaciar(); setConfirmarVaciar(false); }}>Sí, vaciar</button>
+                                    <button type="button" className="btn-texto" onClick={() => setConfirmarVaciar(false)}>No</button>
+                                </span>
+                            ) : (
+                                <button type="button" className="btn-texto" onClick={() => setConfirmarVaciar(true)}>Vaciar pedido</button>
+                            )
+                        )}
+                    </div>
                     {items.length === 0 && !pedido && (
                         <p className="texto-suave">Aún no agregas cartas. <Link to="/catalogo">Ve al catálogo</Link>.</p>
                     )}

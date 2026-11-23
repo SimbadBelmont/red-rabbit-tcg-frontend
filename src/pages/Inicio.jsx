@@ -10,7 +10,7 @@ import { usePedido } from '../context/PedidoContext';
 const ACCESOS = [
     { titulo: 'Catálogo', texto: 'Todo lo que hay en existencia, con filtros por juego, expansión y rareza.', cta: 'Ver catálogo', to: '/catalogo' },
     { titulo: 'Eventos', texto: 'Torneos, prereleases y ligas. Reserva tu lugar en línea.', cta: 'Ver eventos', to: '/eventos' },
-    { titulo: 'Cómo pedir', texto: 'Aparta tus cartas y confirma tu pedido por correo.', cta: 'Ver pasos', to: '/como-pedir' },
+    { titulo: 'Mi pedido', texto: 'Revisa tus cartas apartadas y envía tu pedido por correo.', cta: 'Ver mi pedido', to: '/pedido' },
     { titulo: 'Contacto', texto: 'Dirección, horario y formas de contactarnos.', cta: 'Contáctanos', to: '/contacto' },
 ];
 
@@ -81,7 +81,7 @@ export default function Inicio() {
                     {cantidad > 0 && (
                         <div className="barra-pedido">
                             <span>Tienes {cantidad} {cantidad === 1 ? 'carta' : 'cartas'} en tu pedido</span>
-                            <Link to="/como-pedir" className="btn btn--rojo btn--chico">Ir a mi pedido</Link>
+                            <Link to="/pedido" className="btn btn--rojo btn--chico">Ir a mi pedido</Link>
                         </div>
                     )}
                 </div>

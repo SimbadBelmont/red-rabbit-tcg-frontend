@@ -19,8 +19,15 @@ export const catalogo = (filtros = {}) => {
 export const recientes = (cantidad = 8) => api(`/inventario/recientes?cantidad=${cantidad}`);
 
 // --- Staff ---
-export const listarTodo = () => api('/inventario');
+// Editor de inventario: búsqueda y filtros (estado: activas | agotadas | baja)
+export const listarInventario = (filtros = {}) => {
+    const params = new URLSearchParams(Object.entries(filtros).filter(([, v]) => v !== '' && v != null));
+    return api(`/inventario?${params}`);
+};
 export const actualizarCarta = (id, datos) => api(`/inventario/${id}`, { method: 'PUT', body: datos });
+export const eliminarCarta = (id) => api(`/inventario/${id}`, { method: 'DELETE' });
+// Guarda las filas de la vista previa ya corregidas
+export const importarLote = (cartas, modo) => api('/inventario/lote', { method: 'POST', body: { cartas, modo } });
 
 const formCsv = (archivo, extra = {}) => {
     const fd = new FormData();

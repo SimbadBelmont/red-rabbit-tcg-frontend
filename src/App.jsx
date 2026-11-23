@@ -6,7 +6,7 @@ import ModalAcceso from './components/ModalAcceso';
 import Inicio from './pages/Inicio';
 import Catalogo from './pages/Catalogo';
 import Eventos from './pages/Eventos';
-import ComoPedir from './pages/ComoPedir';
+import MiPedido from './pages/MiPedido';
 import Contacto from './pages/Contacto';
 import Login from './pages/Login';
 import MiCuenta from './pages/MiCuenta';
@@ -26,7 +26,8 @@ function App() {
           <Route path="/" element={<Inicio />} />
           <Route path="/catalogo" element={<Catalogo />} />
           <Route path="/eventos" element={<Eventos />} />
-          <Route path="/como-pedir" element={<ComoPedir />} />
+          <Route path="/pedido" element={<MiPedido />} />
+          <Route path="/como-pedir" element={<Navigate to="/pedido" replace />} />
           <Route path="/contacto" element={<Contacto />} />
 
           <Route path="/login" element={user ? <Navigate to="/mi-cuenta" /> : <Login />} />

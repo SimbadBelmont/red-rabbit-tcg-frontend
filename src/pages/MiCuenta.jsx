@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import * as wishlist from '../services/wishlistService';
-import { misPedidos } from '../services/pedidoService';
+import { cancelarPedido, misPedidos, quitarArticulo } from '../services/pedidoService';
 import { misEventos } from '../services/eventoService';
 import { actualizarPerfil } from '../services/authService';
 import { nombreJuego } from '../services/inventarioService';
@@ -22,6 +22,33 @@ export default function MiCuenta() {
     const [eventos, setEventos] = useState([]);
     const [perfil, setPerfil] = useState({ nombre: user.nombre, telefono: user.telefono || '', wizardsId: user.wizardsId || '' });
     const [aviso, setAviso] = useState('');
+    const [avisoPedido, setAvisoPedido] = useState(null);
+    const [ocupado, setOcupado] = useState(null);
+    const [confirmarCancelar, setConfirmarCancelar] = useState(null);
+
+    const reemplazarPedido = (actualizado) => setPedidos((lista) => lista.map((x) => (x._id === actualizado._id ? actualizado : x)));
+
+    const quitarDePedido = async (pedido, item) => {
+        setOcupado(pedido._id); setAvisoPedido(null);
+        try {
+            const actualizado = await quitarArticulo(pedido._id, item.carta);
+            reemplazarPedido(actualizado);
+            setAvisoPedido({ tipo: 'ok', texto: actualizado.estado === 'cancelado' ? `Quitaste la última carta; el pedido ${pedido.folio} quedó cancelado.` : `Quitaste ${item.nombre} del pedido ${pedido.folio}.` });
+        } catch (e) {
+            setAvisoPedido({ tipo: 'error', texto: e.message });
+        } finally { setOcupado(null); }
+    };
+
+    const cancelar = async (pedido) => {
+        setOcupado(pedido._id); setAvisoPedido(null);
+        try {
+            reemplazarPedido(await cancelarPedido(pedido._id));
+            setConfirmarCancelar(null);
+            setAvisoPedido({ tipo: 'ok', texto: `Cancelaste el pedido ${pedido.folio}.` });
+        } catch (e) {
+            setAvisoPedido({ tipo: 'error', texto: e.message });
+        } finally { setOcupado(null); }
+    };
 
     useEffect(() => {
         wishlist.listar().then(setDeseos).catch(() => {});
@@ -81,13 +108,47 @@ export default function MiCuenta() {
 
             {pestana === 'pedidos' && (
                 <div className="pila">
-                    {pedidos.map((p) => (
-                        <div key={p._id} className="tarjeta fila-lista">
-                            <div className="pila-chica fila-lista__info"><strong>{p.folio}</strong><span className="texto-suave">{new Date(p.createdAt).toLocaleDateString('es-MX')} · {p.items.length} artículos</span></div>
-                            <strong>{mxn(p.total)}</strong>
-                            <span className="pastilla pastilla--gris capitalizar">{p.estado}</span>
-                        </div>
-                    ))}
+                    {avisoPedido && <p className={`alerta ${avisoPedido.tipo === 'ok' ? 'alerta--ok' : 'alerta--error'}`} role="status">{avisoPedido.texto}</p>}
+                    {pedidos.map((p) => {
+                        const editable = p.estado === 'pendiente';
+                        return (
+                            <details key={p._id} className="tarjeta pedido" open={editable}>
+                                <summary className="pedido__resumen">
+                                    <div className="pila-chica fila-lista__info"><strong>{p.folio}</strong><span className="texto-suave">{new Date(p.createdAt).toLocaleDateString('es-MX')} · {p.items.reduce((s, i) => s + i.cantidad, 0)} artículos</span></div>
+                                    <strong>{mxn(p.total)}</strong>
+                                    <span className={`pastilla ${editable ? 'pastilla--aviso' : 'pastilla--gris'} capitalizar`}>{p.estado}</span>
+                                </summary>
+                                <ul className="pedido__items">
+                                    {p.items.map((i) => (
+                                        <li key={i.carta} className="pedido__item">
+                                            <span>{i.cantidad} × {i.nombre}</span>
+                                            <span className="pedido__item-fin">
+                                                {mxn(i.precio * i.cantidad)}
+                                                {editable && (
+                                                    <button type="button" className="btn-texto" disabled={ocupado === p._id} onClick={() => quitarDePedido(p, i)}>Quitar</button>
+                                                )}
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
+                                {editable ? (
+                                    <div className="fila-botones">
+                                        {confirmarCancelar === p._id ? (
+                                            <>
+                                                <span className="texto-chico">¿Cancelar todo el pedido? Las cartas regresan al inventario.</span>
+                                                <button type="button" className="btn btn--rojo btn--chico" disabled={ocupado === p._id} onClick={() => cancelar(p)}>Sí, cancelar</button>
+                                                <button type="button" className="btn-texto" onClick={() => setConfirmarCancelar(null)}>No</button>
+                                            </>
+                                        ) : (
+                                            <button type="button" className="btn btn--contorno btn--chico" onClick={() => setConfirmarCancelar(p._id)}>Cancelar pedido</button>
+                                        )}
+                                    </div>
+                                ) : p.estado !== 'cancelado' && p.estado !== 'entregado' && (
+                                    <p className="texto-suave texto-chico">La tienda ya confirmó este pedido. Para cambiarlo, contáctanos.</p>
+                                )}
+                            </details>
+                        );
+                    })}
                     {pedidos.length === 0 && <p className="texto-suave">Aún no tienes pedidos.</p>}
                 </div>
             )}

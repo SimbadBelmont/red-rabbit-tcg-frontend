@@ -144,8 +144,12 @@ textarea.campo { resize: vertical; }
 .navbar__enlace:hover { color: var(--rojo-texto); }
 .navbar__enlace.active { background: var(--rosa); color: var(--rojo-texto); font-weight: 600; }
 .navbar__acciones { display: flex; align-items: center; gap: 8px; }
-.navbar__carrito { position: relative; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--tinta); }
-.navbar__burbuja { position: absolute; top: 4px; right: 2px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--rojo); color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.navbar__carrito { min-height: 44px; padding: 0 12px 0 8px; border-radius: 10px; display: flex; align-items: center; gap: 6px; color: var(--tinta); font-weight: 600; font-size: 14px; }
+.navbar__carrito:hover { color: var(--rojo-texto); background: var(--rosa-claro); }
+.navbar__carrito.active { background: var(--rosa); color: var(--rojo-texto); }
+.navbar__carrito-icono { position: relative; display: flex; width: 30px; height: 30px; align-items: center; justify-content: center; }
+@media (max-width: 520px) { .navbar__carrito-texto { display: none; } .navbar__carrito { padding: 0 6px; } }
+.navbar__burbuja { position: absolute; top: -4px; right: -6px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--rojo); color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
 .navbar__menu { display: none; width: 44px; height: 44px; border: 0; background: none; color: var(--tinta); cursor: pointer; }
 
 @media (max-width: 860px) {
@@ -350,3 +354,39 @@ textarea.campo { resize: vertical; }
 @media (prefers-reduced-motion: reduce) { .menu-cuenta__panel { animation: none; } }
 /* Nombres largos no rompen el encabezado de la cuenta */
 .perfil .titulo-seccion { overflow-wrap: anywhere; }
+
+/* --- Edición de cartas (vista previa del CSV y editor de inventario) --- */
+.texto-error { color: #A3141A; font-weight: 600; }
+.etiqueta--chica { font-size: 12px; font-weight: 600; color: var(--suave); gap: 4px; }
+.campo--chico { padding: 8px 10px; font-size: 14px; }
+.campos-carta { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+.campos-carta input[type="number"] { width: 110px; }
+.casilla--campo { min-height: 38px; }
+.fila-botones--fin { justify-content: flex-end; flex-wrap: nowrap; }
+.tabla--editable td { vertical-align: middle; }
+.tabla__fila-error td { background: #FFF6F6; }
+.tabla__fila-edicion td { background: var(--rosa-claro); }
+.carta-fila { display: flex; align-items: center; gap: 12px; min-width: 220px; }
+.carta-fila__mini { width: 36px; height: 50px; border-radius: 4px; background: var(--rosa); flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.carta-fila__mini img { width: 100%; height: 100%; object-fit: cover; }
+.carta-fila__mini svg { width: 20px; height: 28px; }
+.stock-control { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+.stock-control__btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--borde-2); background: #fff; color: var(--tinta); font: 600 16px var(--fuente); cursor: pointer; }
+.stock-control__btn:hover:not(:disabled) { border-color: var(--rojo); color: var(--rojo-texto); }
+.stock-control__btn:disabled { opacity: .4; cursor: not-allowed; }
+
+/* --- Mis pedidos (cliente) --- */
+.pedido { padding: 0; }
+.pedido__resumen { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 18px 20px; cursor: pointer; list-style: none; }
+.pedido__resumen::-webkit-details-marker { display: none; }
+.pedido[open] .pedido__resumen { border-bottom: 1px solid var(--borde); }
+.pedido__items { list-style: none; margin: 0; padding: 8px 20px; }
+.pedido__item { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid #F4E9E9; font-size: 14px; }
+.pedido__item:last-child { border-bottom: 0; }
+.pedido__item-fin { display: flex; align-items: center; gap: 4px; font-weight: 600; }
+.pedido > .fila-botones, .pedido > p { padding: 0 20px 18px; }
+
+/* --- Mi pedido: pasos compactos --- */
+.pasos-compactos { list-style: none; margin: 0; padding: 16px 20px; border-radius: 16px; background: var(--rosa-claro); border: 1px solid var(--borde); display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.pasos-compactos__paso { display: flex; align-items: center; gap: 12px; }
+.paso__numero--chico { width: 36px; height: 36px; font-size: 17px; flex-shrink: 0; }
