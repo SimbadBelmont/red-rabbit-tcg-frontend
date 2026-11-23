@@ -15,7 +15,10 @@ export const PedidoProvider = ({ children }) => {
     const agregar = (carta) => setItems((prev) => {
         const ya = prev.find((i) => i._id === carta._id);
         if (ya) return prev.map((i) => (i._id === carta._id ? { ...i, cantidad: Math.min(i.cantidad + 1, carta.stock) } : i));
-        return [...prev, { _id: carta._id, nombre: carta.nombre, juego: carta.juego, precio: carta.precio, imagen: carta.imagen, stock: carta.stock, cantidad: 1 }];
+        return [...prev, {
+            _id: carta._id, nombre: carta.nombre, juego: carta.juego, precio: carta.precio, imagen: carta.imagen, stock: carta.stock, cantidad: 1,
+            condicion: carta.condicion, acabado: carta.acabado, expansion: carta.expansion,
+        }];
     });
     const cambiarCantidad = (id, cantidad) => setItems((prev) => prev
         .map((i) => (i._id === id ? { ...i, cantidad: Math.max(0, Math.min(cantidad, i.stock)) } : i))

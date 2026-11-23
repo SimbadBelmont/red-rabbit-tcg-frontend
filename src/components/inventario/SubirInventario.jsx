@@ -1,11 +1,12 @@
 import { useMemo, useRef, useState } from 'react';
 import { descargarPlantilla, importarLote, nombreJuego, previsualizarCsv } from '../../services/inventarioService';
 import { mxn } from '../../utils/formato';
+import { etiquetaAcabado } from '../../utils/acabados';
 import { IconoSubir } from '../Iconos';
 import CamposCarta from './CamposCarta';
 import { limpiar, problemasDe } from './editorCarta';
 
-const COLUMNAS = ['nombre', 'juego', 'expansion', 'numero', 'rareza', 'condicion', 'idioma', 'foil', 'precio', 'moneda', 'stock'];
+const COLUMNAS = ['nombre', 'juego', 'expansion', 'numero', 'rareza', 'condicion', 'idioma', 'acabado', 'precio', 'moneda', 'stock'];
 const POR_PAGINA = 50;
 
 // Junta las filas válidas y las que faltan por corregir en una sola lista editable
@@ -92,7 +93,7 @@ export default function SubirInventario() {
                     <div className="columnas-esperadas">
                         <span className="sobretitulo">COLUMNAS ESPERADAS</span>
                         <div className="fila-botones">{COLUMNAS.map((c) => <code key={c} className="codigo">{c}</code>)}</div>
-                        <span className="texto-suave texto-chico">También puedes subir directo el CSV que exporta ManaBox.</span>
+                        <span className="texto-suave texto-chico">acabado: normal, foil, surge o etched. También puedes subir directo el CSV que exporta ManaBox (un surge foil llega como foil: corrígelo aquí con Editar).</span>
                     </div>
                 </div>
             )}
@@ -156,7 +157,7 @@ export default function SubirInventario() {
                                         <td>
                                             <div className="pila-chica">
                                                 <strong>{f.nombre}</strong>
-                                                <span className="texto-suave texto-chico">{nombreJuego(f.juego)} · {f.expansion} {f.numero}{f.foil ? ' · Foil' : ''}{f.idioma ? ` · ${f.idioma.toUpperCase()}` : ''}</span>
+                                                <span className="texto-suave texto-chico">{nombreJuego(f.juego)} · {f.expansion} {f.numero}{etiquetaAcabado(f.acabado) ? ` · ${etiquetaAcabado(f.acabado)}` : ''}{f.idioma ? ` · ${f.idioma.toUpperCase()}` : ''}</span>
                                                 {f.problemas.length > 0 && <span className="texto-error texto-chico">{f.problemas.join(', ')}</span>}
                                             </div>
                                         </td>

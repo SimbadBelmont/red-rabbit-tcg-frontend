@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CONDICIONES, JUEGOS, actualizarCarta, eliminarCarta, listarInventario, nombreJuego } from '../../services/inventarioService';
 import { mxn } from '../../utils/formato';
+import { etiquetaAcabado } from '../../utils/acabados';
 import { IconoCartaVacia } from '../Iconos';
 import CamposCarta from './CamposCarta';
 import { limpiar, problemasDe } from './editorCarta';
@@ -38,8 +39,8 @@ export default function GestionarCartas() {
         const { id, valores } = editando;
         setOcupado(id); setMensaje(null);
         try {
-            const { precio, stock, condicion, foil, idioma } = limpiar(valores);
-            const carta = await actualizarCarta(id, { precio, stock, condicion, foil, idioma });
+            const { precio, stock, condicion, acabado = 'normal', idioma } = limpiar(valores);
+            const carta = await actualizarCarta(id, { precio, stock, condicion, acabado, idioma });
             reemplazarEnLista(carta);
             setEditando(null);
             setMensaje({ tipo: 'ok', texto: `${carta.nombre}: guardado.` });
@@ -121,7 +122,7 @@ export default function GestionarCartas() {
                                         <span className="carta-fila__mini">{c.imagen ? <img src={c.imagen} alt="" loading="lazy" /> : <IconoCartaVacia />}</span>
                                         <div className="pila-chica">
                                             <strong>{c.nombre}</strong>
-                                            <span className="texto-suave texto-chico">{nombreJuego(c.juego)} · {c.expansion} {c.numero}{c.foil ? ' · Foil' : ''}{c.idioma ? ` · ${c.idioma.toUpperCase()}` : ''}</span>
+                                            <span className="texto-suave texto-chico">{nombreJuego(c.juego)} · {c.expansion} {c.numero}{etiquetaAcabado(c.acabado) ? ` · ${etiquetaAcabado(c.acabado)}` : ''}{c.idioma ? ` · ${c.idioma.toUpperCase()}` : ''}</span>
                                         </div>
                                     </div>
                                 </td>

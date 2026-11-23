@@ -26,6 +26,17 @@ export const listarInventario = (filtros = {}) => {
 };
 export const actualizarCarta = (id, datos) => api(`/inventario/${id}`, { method: 'PUT', body: datos });
 export const eliminarCarta = (id) => api(`/inventario/${id}`, { method: 'DELETE' });
+// Alta manual: si ya existe la misma variante, el backend suma el stock
+export const crearCarta = (datos) => api('/inventario', { method: 'POST', body: datos });
+// Búsqueda en Scryfall (pasa por el backend, que respeta su límite de 2 consultas por segundo)
+export const scryfallAutocompletar = (q) => api(`/inventario/scryfall/autocompletar?q=${encodeURIComponent(q)}`);
+export const scryfallImpresiones = (nombre) => api(`/inventario/scryfall/impresiones?nombre=${encodeURIComponent(nombre)}`);
+// Foto de carta (ya reducida en el navegador); devuelve { url }
+export const subirImagen = (archivo) => {
+    const fd = new FormData();
+    fd.append('imagen', archivo, archivo.name || 'foto.jpg');
+    return api('/inventario/imagenes', { method: 'POST', body: fd });
+};
 // Guarda las filas de la vista previa ya corregidas
 export const importarLote = (cartas, modo, archivo) => api('/inventario/lote', { method: 'POST', body: { cartas, modo, archivo } });
 

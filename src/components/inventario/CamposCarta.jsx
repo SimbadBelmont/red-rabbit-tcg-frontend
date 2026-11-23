@@ -1,8 +1,10 @@
 import { CONDICIONES } from '../../services/inventarioService';
 
 // Campos editables de una carta, compartidos por la vista previa del CSV y el editor de inventario
-export default function CamposCarta({ valores, onCambio, id, conIdioma = false }) {
-    const cambiar = (campo) => (e) => onCambio({ ...valores, [campo]: e.target.type === 'checkbox' ? e.target.checked : e.target.value });
+export default function CamposCarta({ valores, onCambio, id, conIdioma = false, conAcabado = true }) {
+    const cambiar = (campo) => (e) => onCambio({ ...valores, [campo]: e.target.value });
+    // Cartas guardadas antes de existir "acabado" traen solo foil: true/false
+    const acabado = valores.acabado || (valores.foil ? 'foil' : 'normal');
 
     return (
         <div className="campos-carta">
@@ -27,7 +29,16 @@ export default function CamposCarta({ valores, onCambio, id, conIdioma = false }
                     </select>
                 </label>
             )}
-            <label className="casilla casilla--campo"><input type="checkbox" checked={!!valores.foil} onChange={cambiar('foil')} />Foil</label>
+            {/* Acabado: casillas excluyentes (ninguna marcada = normal) */}
+            {conAcabado && <fieldset className="acabados">
+                <legend className="etiqueta--chica">Acabado</legend>
+                {[['foil', 'Foil'], ['surge', 'Surge foil'], ['etched', 'Etched']].map(([valor, texto]) => (
+                    <label key={valor} className="casilla casilla--campo">
+                        <input type="checkbox" checked={acabado === valor}
+                            onChange={(e) => onCambio({ ...valores, acabado: e.target.checked ? valor : 'normal' })} />{texto}
+                    </label>
+                ))}
+            </fieldset>}
         </div>
     );
 }

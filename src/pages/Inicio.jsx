@@ -77,7 +77,7 @@ export default function Inicio() {
                         </div>
                     )}
                     {visibles.length > 0
-                        ? <div className="rejilla rejilla--220">{visibles.map((c) => <CartaCard key={c._id} carta={c} />)}</div>
+                        ? <div className="rejilla rejilla--220">{visibles.map((c) => <CartaCard key={c.clave || c._id} carta={c} />)}</div>
                         : <p className="texto-suave">Pronto verás aquí lo más nuevo del inventario.</p>}
                     {cantidad > 0 && (
                         <div className="barra-pedido">

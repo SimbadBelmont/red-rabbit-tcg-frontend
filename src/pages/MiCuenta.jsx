@@ -7,6 +7,7 @@ import { misEventos } from '../services/eventoService';
 import { actualizarPerfil } from '../services/authService';
 import { nombreJuego } from '../services/inventarioService';
 import { fechaLarga, hora, mxn } from '../utils/formato';
+import { etiquetaAcabado } from '../utils/acabados';
 import { IconoUsuario } from '../components/Iconos';
 
 const PESTANAS = [['wishlist', 'Wishlist'], ['pedidos', 'Pedidos'], ['eventos', 'Mis eventos'], ['ajustes', 'Ajustes']];
@@ -121,7 +122,7 @@ export default function MiCuenta() {
                                 <ul className="pedido__items">
                                     {p.items.map((i) => (
                                         <li key={i.carta} className="pedido__item">
-                                            <span>{i.cantidad} × {i.nombre}</span>
+                                            <span>{i.cantidad} × {i.nombre}{(i.condicion || i.acabado) && <span className="texto-suave texto-chico"> · {[i.condicion, etiquetaAcabado(i.acabado)].filter(Boolean).join(' · ')}</span>}</span>
                                             <span className="pedido__item-fin">
                                                 {mxn(i.precio * i.cantidad)}
                                                 {editable && (

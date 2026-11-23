@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import CartaCard from '../components/CartaCard';
+import { ACABADOS } from '../utils/acabados';
 import { CONDICIONES, JUEGOS, catalogo } from '../services/inventarioService';
 
 const RAREZAS = [['common', 'Común'], ['uncommon', 'Infrecuente'], ['rare', 'Rara'], ['mythic', 'Mítica / Secreta']];
 const ORDENES = [['recientes', 'Más recientes'], ['precio_asc', 'Precio: menor a mayor'], ['precio_desc', 'Precio: mayor a menor'], ['nombre', 'Nombre A–Z']];
 
 export default function Catalogo() {
-    const [filtros, setFiltros] = useState({ juego: '', q: '', orden: 'recientes', rareza: [], condicion: [], pagina: 1 });
+    const [filtros, setFiltros] = useState({ juego: '', q: '', orden: 'recientes', rareza: [], condicion: [], acabado: [], pagina: 1 });
     const [busqueda, setBusqueda] = useState('');
     const [datos, setDatos] = useState({ cartas: [], total: 0, paginas: 0 });
     const [error, setError] = useState('');
@@ -23,7 +24,7 @@ export default function Catalogo() {
 
     useEffect(() => {
         let vigente = true;
-        catalogo({ ...filtros, rareza: filtros.rareza.join(','), condicion: filtros.condicion.join(',') })
+        catalogo({ ...filtros, rareza: filtros.rareza.join(','), condicion: filtros.condicion.join(','), acabado: filtros.acabado.join(',') })
             .then((d) => { if (vigente) { setDatos(d); setError(''); } })
             .catch((e) => vigente && setError(e.message))
             .finally(() => vigente && setCargadoPara(JSON.stringify(filtros)));
@@ -70,8 +71,14 @@ export default function Catalogo() {
                     </fieldset>
                     <fieldset className="pila-chica">
                         <legend className="sobretitulo">CONDICIÓN</legend>
-                        {Object.entries(CONDICIONES).slice(0, 3).map(([v, l]) => (
-                            <label key={v} className="casilla"><input type="checkbox" checked={filtros.condicion.includes(v)} onChange={() => alternar('condicion', v)} />{l}</label>
+                        {Object.entries(CONDICIONES).map(([v, l]) => (
+                            <label key={v} className="casilla"><input type="checkbox" checked={filtros.condicion.includes(v)} onChange={() => alternar('condicion', v)} />{v} · {l}</label>
+                        ))}
+                    </fieldset>
+                    <fieldset className="pila-chica">
+                        <legend className="sobretitulo">ACABADO</legend>
+                        {Object.entries(ACABADOS).map(([v, l]) => (
+                            <label key={v} className="casilla"><input type="checkbox" checked={filtros.acabado.includes(v)} onChange={() => alternar('acabado', v)} />{l}</label>
                         ))}
                     </fieldset>
                 </aside>
@@ -80,7 +87,7 @@ export default function Catalogo() {
                     {error && <p className="alerta alerta--error">{error}</p>}
                     <span className="texto-suave texto-chico" aria-live="polite">{cargando ? 'Cargando…' : `${datos.total} cartas encontradas`}</span>
                     <div className="rejilla rejilla--210">
-                        {datos.cartas.map((c) => <CartaCard key={c._id} carta={c} />)}
+                        {datos.cartas.map((c) => <CartaCard key={c.clave || c._id} carta={c} />)}
                     </div>
                     {!cargando && datos.cartas.length === 0 && !error && <p className="texto-suave">No hay cartas con esos filtros.</p>}
                     {datos.paginas > 1 && (
